@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">RssReader</string>
+    <string name="action_sort_by_newest">By newest</string>
+    <string name="action_sort_by_oldest">By oldest</string>
+    <string name="read_more">Read more...</string>
+    <string name="add_rss_feed">Add RSS Feed</string>
+    <string name="loading">Loading...</string>
+    <string name="rss_link_input_hint">input RSS  2.0 </string>
+    <string name="default_rss_link">http://www.feedforall.com/sample.xml</string>
+
+    <string name="error_download_xml_file">Error reading RSS URL</string>
+    <string name="error_internet_required">Internet connection required</string>
+    <string name="error_url_no_valid">URL is not valid</string>
+    <string name="error_rss_link_exists"> RSS link exists</string>
+    <string name="error_loading_feeds_from_file">Error loading Feeds</string>
+    <string name="error_sorting_not_available">Sorting is not available</string>
+</resources>

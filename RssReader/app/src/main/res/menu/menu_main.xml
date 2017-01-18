@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_sort_by_newest"
+        android:title="@string/action_sort_by_newest"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_sort_by_oldest"
+        android:title="@string/action_sort_by_oldest"
+        app:showAsAction="never" />
+</menu>

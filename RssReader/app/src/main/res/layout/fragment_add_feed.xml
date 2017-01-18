@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/add_feed_root_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical"
+    android:padding="@dimen/dimen_10">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Feed URL:"
+        android:textSize="@dimen/font_18"
+        android:textColor="@color/colorAccent"/>
+
+    <EditText
+        android:id="@+id/url_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dimen_5"
+        android:hint="@string/rss_link_input_hint"
+        android:text="@string/default_rss_link"
+        android:textSize="@dimen/font_18" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/fetch_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="@dimen/dimen_5"
+            android:text="Fetch" />
+
+        <Button
+            android:id="@+id/clear_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="@dimen/dimen_5"
+            android:text="Clear" />
+    </LinearLayout>
+</LinearLayout>
