@@ -9,10 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-import com.egorshenova.rss.Constants;
-import com.egorshenova.rss.GlobalContainer;
 import com.egorshenova.rss.R;
-import com.egorshenova.rss.RSSFileManager;
 import com.egorshenova.rss.callbacks.AddFeedCallback;
 import com.egorshenova.rss.models.RSSFeed;
 import com.egorshenova.rss.mvp.addfeed.AddFeedContract;
@@ -91,7 +88,7 @@ public class AddFeedFragment extends BaseFragment implements AddFeedContract.Vie
 
     @Override
     public void showLoading() {
-        createProgress(getResources().getString(R.string.loading));
+        createProgress(getResources().getString(R.string.progress_loading));
     }
 
     @Override
@@ -102,7 +99,7 @@ public class AddFeedFragment extends BaseFragment implements AddFeedContract.Vie
     @Override
     public void openRSSContent(RSSFeed feed) {
         if(callback!= null){
-            callback.openFeed(feed);
+            callback.openAddedFeed(feed);
         }
     }
 }

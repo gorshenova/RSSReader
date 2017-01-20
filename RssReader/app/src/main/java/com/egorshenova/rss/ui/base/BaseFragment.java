@@ -12,16 +12,11 @@ public class BaseFragment extends DialogFragment {
     private ProgressDialog progressDialog;
 
     public void createProgress(String message) {
-        safeClose(progressDialog);
-        progressDialog = DialogHelper.createAndShowProgressDialogWithMessage(getContext(), message);
+        getBaseActivity().createProgress(message);
     }
 
     public void closeProgress() {
-        safeClose(progressDialog);
-    }
-
-    protected void safeClose(Dialog dialog) {
-        DialogHelper.safeClose(dialog);
+        getBaseActivity().closeProgress();
     }
 
     protected BaseActivity getBaseActivity() {

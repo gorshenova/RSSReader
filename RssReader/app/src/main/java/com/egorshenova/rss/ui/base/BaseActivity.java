@@ -1,5 +1,7 @@
 package com.egorshenova.rss.ui.base;
 
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.IBinder;
 import android.support.v4.app.FragmentTransaction;
@@ -10,17 +12,32 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import com.egorshenova.rss.utils.DialogHelper;
 import com.egorshenova.rss.utils.Logger;
 
 public abstract class BaseActivity extends AppCompatActivity {
+    private ProgressDialog progressDialog;
 
     @Override
     public void onBackPressed() {
         if (getFragmentManager().getBackStackEntryCount() == 0) {
-           super.onBackPressed();
+            super.onBackPressed();
         } else {
             getFragmentManager().popBackStack();
         }
+    }
+
+    public void createProgress(String message) {
+        safeClose(progressDialog);
+        progressDialog = DialogHelper.createAndShowProgressDialogWithMessage(this, message);
+    }
+
+    public void closeProgress() {
+        safeClose(progressDialog);
+    }
+
+    protected void safeClose(Dialog dialog) {
+        DialogHelper.safeClose(dialog);
     }
 
     public FragmentTransaction getFragmentTransaction() {
@@ -50,7 +67,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public void replaceInBackStack(BaseFragment fragment, int container, String tag) {
         getFragmentTransaction()
-                .replace(container, fragment,tag)
+                .replace(container, fragment, tag)
                 .addToBackStack(tag)
                 .commitAllowingStateLoss();
     }

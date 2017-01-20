@@ -7,14 +7,25 @@
     android:background="@android:color/black">
 
     <include
-        android:id="@+id/toolbar"
+        android:id="@+id/toolbar_layout"
         layout="@layout/toolbar_layout" />
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar_layout"
+        android:background="@color/colorPrimary"
+        app:tabIndicatorColor="@color/colorAccent"
+        app:tabMode="scrollable"
+        app:tabSelectedTextColor="@color/colorAccent"
+        app:tabTextColor="@color/white"/>
 
     <android.support.v4.widget.DrawerLayout
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
+        android:layout_below="@id/tab_layout"
         android:background="@android:color/white"
         android:scrollbars="vertical">
 

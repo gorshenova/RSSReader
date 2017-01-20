@@ -4,7 +4,7 @@
     <string name="action_sort_by_oldest">By oldest</string>
     <string name="read_more">Read more...</string>
     <string name="add_rss_feed">Add RSS Feed</string>
-    <string name="loading">Loading...</string>
+    <string name="progress_loading">Loading...</string>
     <string name="rss_link_input_hint">input RSS  2.0 </string>
     <string name="default_rss_link">http://www.feedforall.com/sample.xml</string>
 

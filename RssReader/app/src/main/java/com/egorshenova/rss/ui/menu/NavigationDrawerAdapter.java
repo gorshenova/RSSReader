@@ -70,10 +70,10 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
 
                     switch (menuItem.getMenuAction()) {
                         case ADD_FEED_ACTION:
-                            callback.onAddFeedClick();
+                            callback.onMenuAddFeedClick();
                             break;
                         case ACTION_OPEN_FEED:
-                            callback.onMenuItemClick(menuItem);
+                            callback.onMenuOpenFeedClick(menuItem);
                             break;
                         default:
                             logger.error("Menu menuAction isn't identified: " + menuItem.getMenuAction());

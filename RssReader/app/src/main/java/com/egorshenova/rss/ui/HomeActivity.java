@@ -1,10 +1,12 @@
 package com.egorshenova.rss.ui;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.egorshenova.rss.Constants;
 import com.egorshenova.rss.R;
@@ -21,11 +23,13 @@ import com.egorshenova.rss.utils.DialogHelper;
 import com.egorshenova.rss.utils.Logger;
 import com.egorshenova.rss.utils.link.URLClickListener;
 
-public class HomeActivity extends BaseActivity implements HomeContract.View{
+public class HomeActivity extends BaseActivity implements HomeContract.View {
 
     private static final Logger logger = Logger.getLogger(HomeActivity.class);
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
+    private TabLayout tabLayout;
+
     private MenuDrawerFragment drawerFragment;
     private AddFeedFragment addFeedFragment;
     private FeedContentFragment feedContentFragment;
@@ -39,14 +43,34 @@ public class HomeActivity extends BaseActivity implements HomeContract.View{
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         drawerFragment = (MenuDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         drawerFragment.setUp(R.id.fragment_navigation_drawer, drawerLayout, menuClickCallback);
 
         setSupportActionBar(toolbar);
 
-        presenter =  new HomePresenter();
+        presenter = new HomePresenter();
         presenter.attachView(this);
+
         presenter.initializeContent();
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                openFeedContentView((RSSFeed) tab.getTag());
+
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
     }
 
     @Override
@@ -101,8 +125,14 @@ public class HomeActivity extends BaseActivity implements HomeContract.View{
     }
 
     private void openFeedContentFragment(RSSFeed feed) {
+        //select  tab for current feed
+        TabLayout.Tab tab = tabLayout.getTabAt(feed.getId());
+        tab.select();
+
         drawerFragment.toggleMenu();
+        updateTabLayoutVisibility(View.VISIBLE);
         isRefreshMenuAvailable = true;
+
         Bundle args = new Bundle();
         args.putSerializable(Constants.BUNDLE_KEY_FEED, feed);
         feedContentFragment = FeedContentFragment.getInstance(args);
@@ -112,15 +142,27 @@ public class HomeActivity extends BaseActivity implements HomeContract.View{
 
     private void openAddFeedFragment() {
         isRefreshMenuAvailable = false;
+        updateTabLayoutVisibility(View.GONE);
         drawerFragment.toggleMenu();
         addFeedFragment = AddFeedFragment.getInstance(getIntent().getExtras());
         addFeedFragment.setCallback(addFeedCallback);
         openFragment(addFeedFragment, Constants.FRAGMENT_TAG_ADD_FEED);
     }
 
+    private void openWebViewFragment(String url) {
+        drawerFragment.toggleMenu();
+        updateTabLayoutVisibility(View.GONE);
+        Bundle args = new Bundle();
+        args.putString(Constants.BUNDLE_SHOW_URL, url);
+        openFragment(WebViewFragment.getInstance(args), Constants.FRAGMENT_TAG_WEB_VIEW);
+    }
+
     private AddFeedCallback addFeedCallback = new AddFeedCallback() {
         @Override
-        public void openFeed(RSSFeed feed) {
+        public void openAddedFeed(RSSFeed feed) {
+            //add new tab
+            addTab(feed);
+
             // show feed
             openFeedContentFragment(feed);
 
@@ -131,14 +173,14 @@ public class HomeActivity extends BaseActivity implements HomeContract.View{
 
     private MenuClickCallback menuClickCallback = new MenuClickCallback() {
         @Override
-        public void onMenuItemClick(RSSMenuItem menuItem) {
-            logger.debug("onMenuItemClick");
+        public void onMenuOpenFeedClick(RSSMenuItem menuItem) {
+            logger.debug("onMenuOpenFeedClick");
             openFeedContentFragment(menuItem.getFeed());
         }
 
         @Override
-        public void onAddFeedClick() {
-            logger.debug("onMenuItemClick");
+        public void onMenuAddFeedClick() {
+            logger.debug("onMenuOpenFeedClick");
             openAddFeedFragment();
         }
     };
@@ -150,13 +192,6 @@ public class HomeActivity extends BaseActivity implements HomeContract.View{
         }
     };
 
-    private void openWebViewFragment(String url) {
-        drawerFragment.toggleMenu();
-
-        Bundle args = new Bundle();
-        args.putString(Constants.BUNDLE_SHOW_URL, url);
-        openFragment(WebViewFragment.getInstance(args), Constants.FRAGMENT_TAG_WEB_VIEW);
-    }
 
     @Override
     public void openFeedContentView(RSSFeed feed) {
@@ -166,5 +201,18 @@ public class HomeActivity extends BaseActivity implements HomeContract.View{
     @Override
     public void openAddFeedView() {
         openAddFeedFragment();
+    }
+
+    @Override
+    public void addTab(RSSFeed feed) {
+        TabLayout.Tab newTab = tabLayout.newTab();
+        newTab.setTag(feed);
+        newTab.setText(feed.getTitle());
+        tabLayout.addTab(newTab, feed.getId(), true);
+    }
+
+    @Override
+    public void updateTabLayoutVisibility(int visibility) {
+        tabLayout.setVisibility(visibility);
     }
 }

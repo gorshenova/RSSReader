@@ -7,6 +7,7 @@ import android.os.Looper;
 import com.egorshenova.rss.models.RSSFeed;
 import com.egorshenova.rss.utils.Logger;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +47,9 @@ public class GlobalContainer {
         this.feeds.addAll(feeds);
     }
 
+
     public boolean addFeed(RSSFeed feed) {
+        feed.setId(feeds.size());
         return feeds.add(feed);
     }
 
@@ -63,12 +66,12 @@ public class GlobalContainer {
         return context;
     }
 
-    public void saveFeeds() {
+    public void saveFeeds() throws IOException {
         logger.info("===> Save feeds");
         fileManager.writeFeeds(feeds);
     }
 
-    public void loadFeeds() {
+    public void loadFeeds() throws IOException, ClassNotFoundException {
         logger.debug("====> Load feeds");
         List<RSSFeed> result = fileManager.readFeeds();
         if (result != null) {
