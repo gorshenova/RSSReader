@@ -7,6 +7,7 @@
     <string name="progress_loading">Loading...</string>
     <string name="rss_link_input_hint">input RSS  2.0 </string>
     <string name="default_rss_link">http://www.feedforall.com/sample.xml</string>
+    <string name="rss_reader">RSS Reader</string>
 
     <string name="error_download_xml_file">Error reading RSS URL</string>
     <string name="error_internet_required">Internet connection required</string>

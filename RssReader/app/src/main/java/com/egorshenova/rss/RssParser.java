@@ -37,13 +37,15 @@ public class RssParser {
     private static final String TAG_URL = "url";
     private static final String TAG_LANGUAGE = "language";
 
-    public RSSFeed parserFeed(InputStream rssStream) throws XmlPullParserException, IOException, RSSVersionException, ParseException {
+    public RSSFeed parserFeed(InputStream rssStream, String rssLink) throws XmlPullParserException, IOException, RSSVersionException, ParseException {
         try {
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(rssStream, null);
             parser.nextTag();
-            return readFeed(parser);
+            RSSFeed feed = readFeed(parser);
+            feed.setRssLink(rssLink);
+            return feed;
         } finally {
             rssStream.close();
         }
@@ -150,7 +152,7 @@ public class RssParser {
                 skip(parser);
             }
         }
-        Date pubDate =  null;
+        long pubDate = -1;
         if (pubDateStr != null) {
             pubDate = StringUtils.converDateToLong(pubDateStr,channelLanguage);
         }

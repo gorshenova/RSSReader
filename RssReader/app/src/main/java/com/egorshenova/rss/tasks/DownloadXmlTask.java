@@ -87,7 +87,7 @@ public class DownloadXmlTask extends AsyncTask<String, Void, AsyncTaskResult<RSS
      * @return
      * @throws XmlPullParserException
      * @throws IOException
-     * @throws RSSVersionException
+     * @throws RSSVersionException returns when
      */
     private RSSFeed loadXmlFromNetwork(String rssLink) throws XmlPullParserException, IOException, RSSVersionException, ParseException {
         InputStream stream = null;
@@ -95,7 +95,7 @@ public class DownloadXmlTask extends AsyncTask<String, Void, AsyncTaskResult<RSS
         RssParser rssParser = new RssParser();
         try {
             stream = downloadUrl(rssLink);
-            feed = rssParser.parserFeed(stream);
+            feed = rssParser.parserFeed(stream, rssLink);
             feed.setRssLink(rssLink);
         } finally {
             if (stream != null) {

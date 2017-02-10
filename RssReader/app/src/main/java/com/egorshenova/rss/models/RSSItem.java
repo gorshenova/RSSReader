@@ -5,17 +5,29 @@ import java.util.Date;
 
 public class RSSItem implements Serializable {
 
+    private int id;
+    private int feedId;
     private String title;
     private String link;
     private String description;
-    private Date pubDate;
+    private long pubDate;
     private String imageUrl;
 
     public RSSItem(){
 
     }
 
-    public RSSItem(String title, String link, String description, Date pubdate, String imageUrl) {
+    public RSSItem(Integer id, Integer feedId, String title, String link, String description, long pubDate, String imageUrl) {
+        this.id = id;
+        this.feedId = feedId;
+        this.title = title;
+        this.link = link;
+        this.description = description;
+        this.pubDate = pubDate;
+        this.imageUrl = imageUrl;
+    }
+
+    public RSSItem(String title, String link, String description, long pubdate, String imageUrl) {
         this.title = title;
         this.link = link;
         this.description = description;
@@ -47,11 +59,11 @@ public class RSSItem implements Serializable {
         this.description = description;
     }
 
-    public Date getPubDate() {
+    public long getPubDate() {
         return pubDate;
     }
 
-    public void setPubDate(Date pubDate) {
+    public void setPubDate(long pubDate) {
         this.pubDate = pubDate;
     }
 
@@ -63,13 +75,31 @@ public class RSSItem implements Serializable {
         this.imageUrl = imageUrl;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getFeedId() {
+        return feedId;
+    }
+
+    public void setFeedId(int feedId) {
+        this.feedId = feedId;
+    }
+
     @Override
     public String toString() {
         return "RSSItem{" +
-                "title='" + title + '\'' +
+                "id=" + id +
+                ", feedId=" + feedId +
+                ", title='" + title + '\'' +
                 ", link='" + link + '\'' +
                 ", description='" + description + '\'' +
-                ", pubDate='" + pubDate + '\'' +
+                ", pubDate=" + pubDate +
                 ", imageUrl='" + imageUrl + '\'' +
                 '}';
     }

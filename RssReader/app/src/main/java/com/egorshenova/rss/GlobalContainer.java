@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.egorshenova.rss.database.RSSSQLiteHelper;
 import com.egorshenova.rss.models.RSSFeed;
 import com.egorshenova.rss.utils.Logger;
 
@@ -20,6 +21,7 @@ public class GlobalContainer {
     private Context context;
     private Handler handler;
     private RSSFileManager fileManager;
+    private RSSSQLiteHelper dbHelper;
 
     private GlobalContainer() {
 
@@ -49,6 +51,7 @@ public class GlobalContainer {
 
 
     public boolean addFeed(RSSFeed feed) {
+        logger.debug("Add new feed: " + feed.toString());
         feed.setId(feeds.size());
         return feeds.add(feed);
     }
@@ -87,5 +90,12 @@ public class GlobalContainer {
             }
         }
         return false;
+    }
+
+    public RSSSQLiteHelper getSQLiteDBHelper() {
+        if (dbHelper == null) {
+            dbHelper = new RSSSQLiteHelper(getContext());
+        }
+        return dbHelper;
     }
 }

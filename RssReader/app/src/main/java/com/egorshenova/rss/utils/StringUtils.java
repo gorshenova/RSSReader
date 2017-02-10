@@ -21,7 +21,7 @@ public class StringUtils {
         return URLUtil.isValidUrl(url.toLowerCase().trim());
     }
 
-    public static Date converDateToLong(String dateStr, String language) throws ParseException {
+    public static long converDateToLong(String dateStr, String language) throws ParseException {
         // date format: Wed, 31 Oct 2012 12:12:42 +0100
         Locale locale = Locale.US;
         if (language != null) {
@@ -32,7 +32,7 @@ public class StringUtils {
 
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, locale);
         Date date = sdf.parse(dateStr);
-        return date;
+        return date.getTime();
     }
 
     public static SpannableString linkifyText(String description, URLClickListener urlClickListener) {

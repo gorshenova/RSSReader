@@ -34,7 +34,7 @@ public class WebViewFragment extends BaseFragment {
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
 
-        // Force links and redirects to open in the WebView instead of in a browser
+        // Force links and redirects to openDB in the WebView instead of in a browser
         mWebView.setWebViewClient(new WebViewClient());
         return v;
     }
