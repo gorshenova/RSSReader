@@ -147,7 +147,7 @@ public class DownloadXmlTask extends AsyncTask<String, Void, AsyncTaskResult<RSS
         //TODO update items
 
         //check if feed is updated successfully
-        if (count == 0) {
+        if (count == -1) {
             return new AsyncTaskResult<RSSFeed>(new DatabaseException(RSSReaderApplication.getInstance().getContext().getString(R.string.error_updating_feed_in_db)));
         } else {
             return new AsyncTaskResult<RSSFeed>(feed);
