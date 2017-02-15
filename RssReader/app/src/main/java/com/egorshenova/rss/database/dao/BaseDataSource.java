@@ -90,8 +90,4 @@ public abstract class BaseDataSource<T extends BaseModel> {
     public SQLiteDatabase getWritableDatabase() {
         return database;
     }
-
-    public SQLiteDatabase getReadableDatabase(){
-        return dbHelper.getReadableDatabase();
-    }
 }
