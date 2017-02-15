@@ -4,9 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RSSFeed implements Serializable {
-
-    private int id;
+public class RSSFeed  extends BaseModel implements Serializable {
     private String title;
     private String imageUrl;
     private String rssLink;
@@ -50,14 +48,6 @@ public class RSSFeed implements Serializable {
 
     public void setRssLink(String rssLink) {
         this.rssLink = rssLink;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     @Override

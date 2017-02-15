@@ -8,7 +8,6 @@ import com.egorshenova.rss.database.RSSSQLiteHelper;
 import com.egorshenova.rss.models.RSSFeed;
 import com.egorshenova.rss.utils.Logger;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +19,6 @@ public class GlobalContainer {
     private List<RSSFeed> feeds = new ArrayList<>();
     private Context context;
     private Handler handler;
-    private RSSFileManager fileManager;
     private RSSSQLiteHelper dbHelper;
 
     private GlobalContainer() {
@@ -30,7 +28,6 @@ public class GlobalContainer {
     private GlobalContainer(RSSReaderApplication context) {
         this.context = context;
         this.handler = new Handler(Looper.getMainLooper());
-        fileManager = new RSSFileManager(context, Constants.RSS_FILE_NAME);
     }
 
     public static GlobalContainer getInstance() {
@@ -52,7 +49,6 @@ public class GlobalContainer {
 
     public boolean addFeed(RSSFeed feed) {
         logger.debug("Add new feed: " + feed.toString());
-        feed.setId(feeds.size());
         return feeds.add(feed);
     }
 
@@ -67,20 +63,6 @@ public class GlobalContainer {
 
     public Context getContext() {
         return context;
-    }
-
-    public void saveFeeds() throws IOException {
-        logger.info("===> Save feeds");
-        fileManager.writeFeeds(feeds);
-    }
-
-    public void loadFeeds() throws IOException, ClassNotFoundException {
-        logger.debug("====> Load feeds");
-        List<RSSFeed> result = fileManager.readFeeds();
-        if (result != null) {
-            feeds.addAll(result);
-        }
-
     }
 
     public boolean checkRSSLinkExists(String urlStr) {

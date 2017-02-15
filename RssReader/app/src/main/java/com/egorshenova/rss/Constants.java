@@ -10,6 +10,4 @@ public class Constants {
     public static String BUNDLE_KEY_FEED = RSSReaderApplication.getInstance().getPackageName() + ".BUNDLE_KEY_FEED";
     public static final String BUNDLE_SHOW_URL = RSSReaderApplication.getInstance().getPackageName() +".BUNDLE_SHOW_URL";
 
-    public static final String RSS_FILE_NAME = "rssReaderFile";
-
 }

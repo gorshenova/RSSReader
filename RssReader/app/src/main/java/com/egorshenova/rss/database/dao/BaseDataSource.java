@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.egorshenova.rss.GlobalContainer;
 import com.egorshenova.rss.database.RSSSQLiteHelper;
+import com.egorshenova.rss.models.BaseModel;
 import com.egorshenova.rss.utils.Logger;
 
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ import java.util.List;
  * Created by eyablonskaya on 10-Feb-17.
  */
 
-public abstract class BaseDataSource<T> {
+public abstract class BaseDataSource<T extends BaseModel> {
     public final Logger logger = Logger.getLogger(BaseDataSource.class);
     protected RSSSQLiteHelper dbHelper;
     protected SQLiteDatabase database;
@@ -79,5 +80,9 @@ public abstract class BaseDataSource<T> {
         if (database != null) {
             database.execSQL(sql, bindArgs);
         }
+    }
+
+    public SQLiteDatabase getWritableDatabase() {
+        return database;
     }
 }

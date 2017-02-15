@@ -52,7 +52,6 @@ public class AddFeedFragment extends BaseFragment implements AddFeedContract.Vie
     public void onDestroy() {
         super.onDestroy();
         presenter.detachView();
-        presenter.unregister();
     }
 
     @Override

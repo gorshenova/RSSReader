@@ -74,12 +74,6 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        presenter.saveFeeds();
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (addFeedFragment != null) {
@@ -126,7 +120,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
 
     private void openFeedContentFragment(RSSFeed feed) {
         //select  tab for current feed
-        TabLayout.Tab tab = tabLayout.getTabAt(feed.getId());
+        TabLayout.Tab tab = tabLayout.getTabAt(feed.getId() - 1);
         tab.select();
 
         drawerFragment.toggleMenu();
@@ -208,11 +202,24 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
         TabLayout.Tab newTab = tabLayout.newTab();
         newTab.setTag(feed);
         newTab.setText(feed.getTitle());
-        tabLayout.addTab(newTab, feed.getId(), true);
+
+        //feedId starts from 1 but tab index starts from 0, so tabPosition is calculated as feedId - 1
+        int tabPosition = feed.getId() -1;
+        tabLayout.addTab(newTab, tabPosition, true);
     }
 
     @Override
     public void updateTabLayoutVisibility(int visibility) {
         tabLayout.setVisibility(visibility);
+    }
+
+    @Override
+    public void showProgress() {
+        createProgress(getString(R.string.progress_loading));
+    }
+
+    @Override
+    public void hideProgress() {
+        closeProgress();
     }
 }

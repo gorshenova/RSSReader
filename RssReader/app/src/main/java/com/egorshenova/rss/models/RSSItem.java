@@ -3,9 +3,7 @@ package com.egorshenova.rss.models;
 import java.io.Serializable;
 import java.util.Date;
 
-public class RSSItem implements Serializable {
-
-    private int id;
+public class RSSItem extends BaseModel implements Serializable {
     private int feedId;
     private String title;
     private String link;
@@ -13,7 +11,7 @@ public class RSSItem implements Serializable {
     private long pubDate;
     private String imageUrl;
 
-    public RSSItem(){
+    public RSSItem() {
 
     }
 
@@ -73,14 +71,6 @@ public class RSSItem implements Serializable {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public int getFeedId() {

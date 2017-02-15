@@ -41,4 +41,8 @@ public class StringUtils {
         Linkify.addLinks(spannableText, Linkify.WEB_URLS, urlClickListener);
         return spannableText;
     }
+
+    public static String replaceSingleQuoteByDoubleOne(String str){
+        return str.replace("'", "''");
+    }
 }
