@@ -1,6 +1,7 @@
 package com.egorshenova.rss.ui.content;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,10 +24,10 @@ public class FeedContentFragment extends BaseFragment implements FeedContentCont
 
     private Logger logger = Logger.getLogger(FeedContentFragment.class);
     private RecyclerView recyclerView;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private FeedContentAdapter adapter;
     private ProgressBar progressBar;
     private FeedContentPresenter presenter;
-    private RSSFeed feed;
     private URLClickListener listener;
 
     public static FeedContentFragment getInstance(Bundle args) {
@@ -46,8 +47,27 @@ public class FeedContentFragment extends BaseFragment implements FeedContentCont
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
 
-        presenter = new FeedContentPresenter();
-        presenter.attachView(this);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.content_swipe_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //disable swipe
+                swipeRefreshLayout.setEnabled(false);
+
+                //update feed
+                presenter.updateFeed();
+
+                //activate swipe
+                swipeRefreshLayout.setEnabled(true);
+
+                //cancel loading
+                if (swipeRefreshLayout.isRefreshing()) {
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        });
+
+
         return view;
     }
 
@@ -55,7 +75,9 @@ public class FeedContentFragment extends BaseFragment implements FeedContentCont
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         RSSFeed feed = getFeedByArguments();
-        presenter.openFeedContent(feed);
+        presenter = new FeedContentPresenter(feed);
+        presenter.attachView(this);
+        presenter.openFeedContent();
     }
 
     @Override
@@ -75,7 +97,6 @@ public class FeedContentFragment extends BaseFragment implements FeedContentCont
     }
 
     public void showFeedContent(RSSFeed feed) {
-        this.feed = feed;
         adapter.setItems(feed.getItems());
         adapter.notifyDataSetChanged();
         adapter.setUrlClickListener(listener);

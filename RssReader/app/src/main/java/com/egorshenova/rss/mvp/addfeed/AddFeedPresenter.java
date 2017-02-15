@@ -50,7 +50,7 @@ public class AddFeedPresenter extends BasePresenter<AddFeedContract.View> implem
 
         } else {
             getView().showLoading();
-            downloadXmlTask = new DownloadXmlTask(downloadXmlCallback);
+            downloadXmlTask =  new DownloadXmlTask(downloadXmlCallback, false, -1);
             downloadXmlTask.execute(urlStr);
         }
 

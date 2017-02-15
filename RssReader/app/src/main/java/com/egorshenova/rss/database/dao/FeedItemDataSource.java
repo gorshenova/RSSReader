@@ -66,7 +66,7 @@ public class FeedItemDataSource extends BaseDataSource<RSSItem> {
                     Logger.error(FeedItemDataSource.class, "Item was not added in database: " + i);
                 }
 
-                // In case you do larger updates, use a methos yieldIfContendedSafely.
+                // In case you do larger updates, use a methods yieldIfContendedSafely.
                 // Because SQLite locks the database during an transaction.
                 // With this call, Android checks if someone else queries the data and
                 // if finish automatically the transaction and opens a new one.

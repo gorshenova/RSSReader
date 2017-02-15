@@ -16,16 +16,28 @@ public class FeedContentPresenter extends BasePresenter<FeedContentContract.View
     private static Logger logger = Logger.getLogger(FeedContentPresenter.class);
 
     private RSSFeed feed;
+    private DownloadXmlTask downloadXmlTask;
+
+    public FeedContentPresenter(RSSFeed feed) {
+        this.feed = feed;
+    }
 
     @Override
-    public void openFeedContent(RSSFeed feed) {
+    public void detachView() {
+        super.detachView();
+        if(downloadXmlTask != null){
+            downloadXmlTask.setCallback(null);
+        }
+    }
+
+    @Override
+    public void openFeedContent() {
         checkViewAttached();
 
         if (feed.getItems() != null && feed.getItems().size() > 0) {
-            this.feed = feed;
             getView().showFeedContent(feed);
         } else {
-            downloadFeed(feed.getRssLink());
+            downloadFeed(false, -1, feed.getRssLink());
         }
     }
 
@@ -45,31 +57,44 @@ public class FeedContentPresenter extends BasePresenter<FeedContentContract.View
         getView().showFeedContent(feed);
     }
 
-    public void downloadFeed(String rssLink) {
+    @Override
+    public void updateFeed() {
+        checkViewAttached();
+
+        //show loading
+        getView().showLoading();
+
+        //download feed again and show its content
+        downloadFeed(true, feed.getId(), feed.getRssLink());
+    }
+
+    public void downloadFeed(boolean feedUpdate, int feedId, String rssLink) {
         if (!NetworkHelper.isInternetAvailable(getContext())) {
             getView().showError(getContext().getResources().getString(R.string.error_internet_required));
 
         } else {
 
             getView().showLoading();
-            new DownloadXmlTask(new DownloadXmlCallback() {
+            downloadXmlTask = new DownloadXmlTask(new DownloadXmlCallback() {
                 @Override
                 public void onError(String message) {
                     getView().showError(message);
+                    getView().hideLoading();
                 }
 
                 @Override
                 public void onSuccess(RSSFeed feed) {
                     logger.debug("downloadFeed: " + feed);
                     prepareRSSContent(feed);
+                    getView().hideLoading();
                 }
-            }).execute(rssLink);
+            }, feedUpdate, feedId);
+            downloadXmlTask.execute(rssLink);
         }
     }
 
     private void prepareRSSContent(RSSFeed feed) {
         this.feed = feed;
         getView().showFeedContent(feed);
-        getView().hideLoading();
     }
 }

@@ -14,6 +14,7 @@ import com.egorshenova.rss.exceptions.DatabaseException;
 import com.egorshenova.rss.exceptions.RSSVersionException;
 import com.egorshenova.rss.models.RSSFeed;
 import com.egorshenova.rss.models.RSSItem;
+import com.egorshenova.rss.utils.ComparatorByPubDate;
 import com.egorshenova.rss.utils.Logger;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -23,6 +24,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
+import java.util.Collections;
 import java.util.List;
 
 public class DownloadXmlTask extends AsyncTask<String, Void, AsyncTaskResult<RSSFeed>> {
@@ -32,8 +34,18 @@ public class DownloadXmlTask extends AsyncTask<String, Void, AsyncTaskResult<RSS
 
     private Logger logger = Logger.getLogger(DownloadXmlTask.class);
     private DownloadXmlCallback callback;
+    private boolean feedUpdated;
+    private FeedDataSource feedDataSource;
+    private int feedId;
 
-    public DownloadXmlTask(DownloadXmlCallback callback) {
+    public DownloadXmlTask(DownloadXmlCallback callback, boolean feedUpdated, int feedId) {
+        this.callback = callback;
+        this.feedUpdated = feedUpdated;
+        this.feedId = feedId;
+        feedDataSource =  new FeedDataSource();
+    }
+
+    public void setCallback(DownloadXmlCallback callback) {
         this.callback = callback;
     }
 
@@ -41,33 +53,15 @@ public class DownloadXmlTask extends AsyncTask<String, Void, AsyncTaskResult<RSS
     protected AsyncTaskResult<RSSFeed> doInBackground(String... urls) {
         try {
             RSSFeed feed = loadXmlFromNetwork(urls[0]);
-
-            //insert feed in database
-            FeedDataSource feedDataSource = new FeedDataSource();
-            feedDataSource.open();
-            int feedId = feedDataSource.createFeed(feed);
-            feed.setId(feedId);
-            feedDataSource.close();
-
-            //check if feed is added successfully
-            if (feedId == -1){
-                return new AsyncTaskResult<RSSFeed>(new DatabaseException(RSSReaderApplication.getInstance().getContext().getString(R.string.error_adding_feed_in_db)));
+            if (feedUpdated && feedId != -1) {
+                feed.setId(feedId);
+                return updateFeedInDatabase(feed);
             } else {
-                //insert feed items if they aren't absent
-                if (feed.getItems() != null && feed.getItems().size() > 0) {
-                    FeedItemDataSource feedItemDataSource = new FeedItemDataSource();
-                    feedItemDataSource.open();
-                    List<RSSItem> addedItems = feedItemDataSource.addItemsByFeedId(feedId, feed.getItems());
-                    feedItemDataSource.close();
-
-                    //set items in the feed which are added in database successfully
-                    feed.setItems(addedItems);
-                }
-                return new AsyncTaskResult<RSSFeed>(feed);
+                return insertFeedInDatabase(feed);
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            return new AsyncTaskResult<RSSFeed>(e);
+            return new AsyncTaskResult<>(e);
         }
     }
 
@@ -76,15 +70,24 @@ public class DownloadXmlTask extends AsyncTask<String, Void, AsyncTaskResult<RSS
         logger.debug("Download AsyncTaskResult: " + result);
         if (callback == null) return;
 
-        if (result.getError() != null) {
+        Exception error = result.getError();
+        if (error != null) {
             Context context = GlobalContainer.getInstance().getContext();
-            String errorMessage = context.getResources().getString(R.string.error_download_xml_file); //TODO miss message from exception for exampla DatabaseException
+            String errorMessage = context.getResources().getString(R.string.error_download_xml_file);
+            if (error.getMessage() != null && !error.getMessage().isEmpty()) {
+                errorMessage = error.getMessage();
+            }
             callback.onError(errorMessage);
         } else {
             RSSFeed feed = result.getResult();
 
-            //add new feed to container
-            GlobalContainer.getInstance().addFeed(feed);
+            if (feedUpdated) {
+                //update feed
+                GlobalContainer.getInstance().updateFeed(feed);
+            } else {
+                //add new feed to container
+                GlobalContainer.getInstance().addFeed(feed);
+            }
 
             callback.onSuccess(feed);
         }
@@ -136,8 +139,51 @@ public class DownloadXmlTask extends AsyncTask<String, Void, AsyncTaskResult<RSS
         return feed;
     }
 
-    public void setCallback(DownloadXmlCallback callback) {
-        this.callback = callback;
+    private AsyncTaskResult<RSSFeed> updateFeedInDatabase(RSSFeed feed) {
+        feedDataSource.open();
+        int count = feedDataSource.updateFeed(feed);
+        feedDataSource.close();
+
+        //TODO update items
+
+        //check if feed is updated successfully
+        if (count == 0) {
+            return new AsyncTaskResult<RSSFeed>(new DatabaseException(RSSReaderApplication.getInstance().getContext().getString(R.string.error_updating_feed_in_db)));
+        } else {
+            return new AsyncTaskResult<RSSFeed>(feed);
+        }
     }
+
+
+    private AsyncTaskResult<RSSFeed> insertFeedInDatabase(RSSFeed feed) {
+        feedDataSource.open();
+        int feedId = feedDataSource.createFeed(feed);
+        feed.setId(feedId);
+        feedDataSource.close();
+
+        //insert feed items
+        //check if feed is added successfully
+        if (feedId == -1) {
+            return new AsyncTaskResult<RSSFeed>(new DatabaseException(RSSReaderApplication.getInstance().getContext().getString(R.string.error_adding_feed_in_db)));
+        } else {
+            //insert feed items if they aren't absent
+            if (feed.getItems() != null && feed.getItems().size() > 0) {
+                FeedItemDataSource feedItemDataSource = new FeedItemDataSource();
+                feedItemDataSource.open();
+
+                //sort items by pubDate
+                Collections.sort(feed.getItems(), Collections.reverseOrder(new ComparatorByPubDate()));
+
+                //insert in db
+                List<RSSItem> addedItems = feedItemDataSource.addItemsByFeedId(feedId, feed.getItems());
+                feedItemDataSource.close();
+
+                //set items in the feed which are added in database successfully
+                feed.setItems(addedItems);
+            }
+            return new AsyncTaskResult<RSSFeed>(feed);
+        }
+    }
+
 }
 

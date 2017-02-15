@@ -33,10 +33,17 @@ public final class RSSReaderContract {
 
         public static final String SQL_SELECT_ALL_FEEDS = "SELECT * FROM " + TABLE_NAME;
 
+        
         public static final String SQL_INSERT_FEED = "INSERT INTO " + TABLE_NAME + "("
                 + COLUMN_NAME_TITLE + ","
                 + COLUMN_NAME_RSS_LINK + ","
                 + COLUMN_NAME_IMAGE_URL + ") VALUES('?', '?', '?')";
+                
+        public static final String SQL_UPDATE_FEED_BY_ID = "UPDATE " + TABLE_NAME + " SET "
+                + COLUMN_NAME_TITLE  + " = ?, "
+                + COLUMN_NAME_IMAGE_URL + " = ? "
+                + "WHERE " + COLUMN_NAME_ID + " = ?";
+
     }
 
     public static abstract class FeedItemsEntry implements BaseColumns {

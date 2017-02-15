@@ -16,4 +16,5 @@
     <string name="error_loading_feeds_from_file">Error loading Feeds</string>
     <string name="error_sorting_not_available">Sorting is not available</string>
     <string name="error_adding_feed_in_db">Error adding feed in database</string>
+    <string name="error_updating_feed_in_db">Error updating feed in database</string>
 </resources>

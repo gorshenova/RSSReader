@@ -33,6 +33,11 @@ public abstract class BaseDataSource<T extends BaseModel> {
         dbHelper.close();
     }
 
+    /**
+     * Method is used to create object from cursor
+     * @param c cursor
+     * @return object
+     */
     protected abstract T createFromCursor(Cursor c);
 
     protected T find(String sql, Object... sqlArgs) {
@@ -84,5 +89,9 @@ public abstract class BaseDataSource<T extends BaseModel> {
 
     public SQLiteDatabase getWritableDatabase() {
         return database;
+    }
+
+    public SQLiteDatabase getReadableDatabase(){
+        return dbHelper.getReadableDatabase();
     }
 }

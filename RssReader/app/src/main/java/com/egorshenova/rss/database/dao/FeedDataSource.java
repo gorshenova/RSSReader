@@ -2,9 +2,11 @@ package com.egorshenova.rss.database.dao;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.SQLException;
 
 import com.egorshenova.rss.database.RSSReaderContract.FeedEntry;
 import com.egorshenova.rss.models.RSSFeed;
+import com.egorshenova.rss.utils.Logger;
 import com.egorshenova.rss.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -15,6 +17,7 @@ import java.util.List;
  */
 
 public class FeedDataSource extends BaseDataSource<RSSFeed> {
+
     @Override
     protected RSSFeed createFromCursor(Cursor c) {
         RSSFeed feed = new RSSFeed();
@@ -25,6 +28,11 @@ public class FeedDataSource extends BaseDataSource<RSSFeed> {
         return feed;
     }
 
+    /**
+     * Method gets all feeds
+     *
+     * @return a list of feeds
+     */
     public List<RSSFeed> getAllFeeds() {
         List<RSSFeed> feeds = new ArrayList<>();
         List<RSSFeed> res = get(FeedEntry.SQL_SELECT_ALL_FEEDS);
@@ -34,14 +42,44 @@ public class FeedDataSource extends BaseDataSource<RSSFeed> {
         return feeds;
     }
 
+    /**
+     * Method inserts new feed
+     *
+     * @param feed
+     * @return feed id
+     */
     public int createFeed(RSSFeed feed) {
         //Create a new map of values, where column names are the keys
-        ContentValues values =  new ContentValues();
+        ContentValues values = new ContentValues();
         values.put(FeedEntry.COLUMN_NAME_TITLE, StringUtils.replaceSingleQuoteByDoubleOne(feed.getTitle()));
         values.put(FeedEntry.COLUMN_NAME_RSS_LINK, feed.getRssLink());
         values.put(FeedEntry.COLUMN_NAME_IMAGE_URL, feed.getImageUrl());
 
         // Insert the new row, returning the primary key value of the new row
-        return (int) getWritableDatabase().insert(FeedEntry.TABLE_NAME, null ,values);
+        return (int) getWritableDatabase().insert(FeedEntry.TABLE_NAME, null, values);
+    }
+
+    /**
+     * Method updates feed data by feed id
+     *
+     * @param feed
+     * @return the number of rows affected. If the number equals 0 than actual data have already saved in the database
+     */
+    public int updateFeed(RSSFeed feed) {
+     /*   ContentValues values = new ContentValues();
+        values.put(FeedEntry.COLUMN_NAME_TITLE, feed.getTitle());
+        values.put(FeedEntry.COLUMN_NAME_IMAGE_URL, feed.getImageUrl());
+
+        String selection = FeedEntry.COLUMN_NAME_ID + " = '?'";
+        String[] selectionArgs = new String[]{String.valueOf(feed.getId())};
+        return getReadableDatabase().update(FeedEntry.TABLE_NAME, values, selection, selectionArgs);*/
+
+        try {
+            execSql(FeedEntry.SQL_UPDATE_FEED_BY_ID, feed.getTitle(), feed.getImageUrl(), feed.getId());
+        }catch (SQLException e){
+            Logger.error(FeedDataSource.class, e.getMessage(), e);
+            return -1;
+        }
+        return 0;
     }
 }

@@ -20,10 +20,12 @@ public interface FeedContentContract {
 
     interface Presenter extends IBasePresenter<FeedContentContract.View> {
 
-        void openFeedContent(RSSFeed feed);
+        void openFeedContent();
 
         void sortByNewest();
 
         void sortByOldest();
+
+        void updateFeed();
     }
 }

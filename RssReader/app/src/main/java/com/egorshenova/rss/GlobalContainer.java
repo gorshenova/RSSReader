@@ -6,9 +6,11 @@ import android.os.Looper;
 
 import com.egorshenova.rss.database.RSSSQLiteHelper;
 import com.egorshenova.rss.models.RSSFeed;
+import com.egorshenova.rss.utils.ComparatorByPubDate;
 import com.egorshenova.rss.utils.Logger;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class GlobalContainer {
@@ -48,7 +50,13 @@ public class GlobalContainer {
 
 
     public boolean addFeed(RSSFeed feed) {
-        logger.debug("Add new feed: " + feed.toString());
+        logger.debug("Add new feed: " + feed);
+        return feeds.add(feed);
+    }
+
+    public boolean updateFeed(RSSFeed feed) {
+        logger.debug("Update feed: " + feed);
+        feeds.remove(feed);
         return feeds.add(feed);
     }
 
