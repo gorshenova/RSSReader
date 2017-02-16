@@ -4,7 +4,7 @@ import com.egorshenova.rss.R;
 import com.egorshenova.rss.callbacks.DownloadXmlCallback;
 import com.egorshenova.rss.models.RSSFeed;
 import com.egorshenova.rss.mvp.abs.BasePresenter;
-import com.egorshenova.rss.tasks.DownloadXmlTask;
+import com.egorshenova.rss.DownloadXmlManager;
 import com.egorshenova.rss.utils.ComparatorByPubDate;
 import com.egorshenova.rss.utils.Logger;
 import com.egorshenova.rss.utils.NetworkHelper;
@@ -16,7 +16,7 @@ public class FeedContentPresenter extends BasePresenter<FeedContentContract.View
     private static Logger logger = Logger.getLogger(FeedContentPresenter.class);
 
     private RSSFeed feed;
-    private DownloadXmlTask downloadXmlTask;
+    private DownloadXmlManager downloadXmlManager;
 
     public FeedContentPresenter(RSSFeed feed) {
         this.feed = feed;
@@ -25,8 +25,8 @@ public class FeedContentPresenter extends BasePresenter<FeedContentContract.View
     @Override
     public void detachView() {
         super.detachView();
-        if(downloadXmlTask != null){
-            downloadXmlTask.setCallback(null);
+        if(downloadXmlManager != null){
+            downloadXmlManager.setCallback(null);
         }
     }
 
@@ -75,7 +75,7 @@ public class FeedContentPresenter extends BasePresenter<FeedContentContract.View
         } else {
 
             getView().showLoading();
-            downloadXmlTask = new DownloadXmlTask(new DownloadXmlCallback() {
+            downloadXmlManager = new DownloadXmlManager(rssLink, feedUpdate, feedId, new DownloadXmlCallback() {
                 @Override
                 public void onError(String message) {
                     getView().showError(message);
@@ -88,8 +88,8 @@ public class FeedContentPresenter extends BasePresenter<FeedContentContract.View
                     prepareRSSContent(feed);
                     getView().hideLoading();
                 }
-            }, feedUpdate, feedId);
-            downloadXmlTask.execute(rssLink);
+            });
+            downloadXmlManager.start();
         }
     }
 

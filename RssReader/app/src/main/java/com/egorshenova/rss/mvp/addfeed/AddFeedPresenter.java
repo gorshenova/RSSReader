@@ -6,41 +6,31 @@ import com.egorshenova.rss.callbacks.DownloadXmlCallback;
 import com.egorshenova.rss.database.dao.FeedDataSource;
 import com.egorshenova.rss.models.RSSFeed;
 import com.egorshenova.rss.mvp.abs.BasePresenter;
-import com.egorshenova.rss.tasks.DownloadXmlTask;
+import com.egorshenova.rss.DownloadXmlManager;
 import com.egorshenova.rss.utils.NetworkHelper;
 import com.egorshenova.rss.utils.StringUtils;
 
 public class AddFeedPresenter extends BasePresenter<AddFeedContract.View> implements AddFeedContract.Presenter {
 
-    private DownloadXmlTask downloadXmlTask;
-    private FeedDataSource feedDataSource;
-
-    @Override
-    public void attachView(AddFeedContract.View view) {
-        super.attachView(view);
-        feedDataSource = new FeedDataSource();
-        feedDataSource.open();
-    }
+    private DownloadXmlManager downloadManager;
 
     @Override
     public void detachView() {
         super.detachView();
-        if (downloadXmlTask != null) {
-            downloadXmlTask.setCallback(null);
+        if (downloadManager != null) {
+            downloadManager.setCallback(null);
         }
-
-        feedDataSource.close();
     }
 
     @Override
-    public void fetchFeed(String urlStr) {
+    public void fetchFeed(String rssUrl) {
         checkViewAttached();
 
-        if (!StringUtils.isURLValid(urlStr)) {
+        if (!StringUtils.isURLValid(rssUrl)) {
             //check if url is valid
             getView().showError(getContext().getResources().getString(R.string.error_url_no_valid));
 
-        } else if (GlobalContainer.getInstance().checkRSSLinkExists(urlStr)) {
+        } else if (GlobalContainer.getInstance().checkRSSLinkExists(rssUrl)) {
             //check the duplication of rss links
             getView().showError(getContext().getResources().getString(R.string.error_rss_link_exists));
 
@@ -50,8 +40,8 @@ public class AddFeedPresenter extends BasePresenter<AddFeedContract.View> implem
 
         } else {
             getView().showLoading();
-            downloadXmlTask =  new DownloadXmlTask(downloadXmlCallback, false, -1);
-            downloadXmlTask.execute(urlStr);
+            downloadManager = new DownloadXmlManager(rssUrl, false, -1, downloadXmlCallback);
+            downloadManager.start();
         }
 
     }

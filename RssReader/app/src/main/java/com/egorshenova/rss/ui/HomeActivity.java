@@ -147,7 +147,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
         drawerFragment.toggleMenu();
         updateTabLayoutVisibility(View.GONE);
         Bundle args = new Bundle();
-        args.putString(Constants.BUNDLE_SHOW_URL, url);
+        args.putString(Constants.BUNDLE_KEY_SHOW_URL, url);
         openFragment(WebViewFragment.getInstance(args), Constants.FRAGMENT_TAG_WEB_VIEW);
     }
 

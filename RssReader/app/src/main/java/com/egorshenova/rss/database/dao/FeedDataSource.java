@@ -66,14 +66,6 @@ public class FeedDataSource extends BaseDataSource<RSSFeed> {
      * @return the number of rows affected. If the number equals 0 than actual data have already saved in the database
      */
     public int updateFeed(RSSFeed feed) {
-     /*   ContentValues values = new ContentValues();
-        values.put(FeedEntry.COLUMN_NAME_TITLE, feed.getTitle());
-        values.put(FeedEntry.COLUMN_NAME_IMAGE_URL, feed.getImageUrl());
-
-        String selection = FeedEntry.COLUMN_NAME_ID + " = '?'";
-        String[] selectionArgs = new String[]{String.valueOf(feed.getId())};
-        return getReadableDatabase().update(FeedEntry.TABLE_NAME, values, selection, selectionArgs);*/
-
         try {
             execSql(FeedEntry.SQL_UPDATE_FEED_BY_ID, feed.getTitle(), feed.getImageUrl(), feed.getId());
         }catch (SQLException e){

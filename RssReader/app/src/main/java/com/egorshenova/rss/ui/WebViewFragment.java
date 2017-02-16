@@ -42,7 +42,7 @@ public class WebViewFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        String url = getParam(Constants.BUNDLE_SHOW_URL);
+        String url = getParam(Constants.BUNDLE_KEY_SHOW_URL);
         mWebView.loadUrl(url);
     }
 

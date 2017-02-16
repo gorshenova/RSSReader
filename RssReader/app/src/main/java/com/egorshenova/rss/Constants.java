@@ -7,7 +7,7 @@ public class Constants {
     public static final String FRAGMENT_TAG_WEB_VIEW = RSSReaderApplication.getInstance().getPackageName() + ".FRAGMENT_TAG_WEB_VIEW";
 
     //bundle keys
-    public static String BUNDLE_KEY_FEED = RSSReaderApplication.getInstance().getPackageName() + ".BUNDLE_KEY_FEED";
-    public static final String BUNDLE_SHOW_URL = RSSReaderApplication.getInstance().getPackageName() +".BUNDLE_SHOW_URL";
+    public static final String BUNDLE_KEY_FEED = RSSReaderApplication.getInstance().getPackageName() + ".BUNDLE_KEY_FEED";
+    public static final String BUNDLE_KEY_SHOW_URL = RSSReaderApplication.getInstance().getPackageName() +".BUNDLE_KEY_SHOW_URL";
 
 }

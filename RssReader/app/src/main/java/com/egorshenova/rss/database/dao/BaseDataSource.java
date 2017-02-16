@@ -1,11 +1,10 @@
 package com.egorshenova.rss.database.dao;
 
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.egorshenova.rss.GlobalContainer;
-import com.egorshenova.rss.database.RSSSQLiteHelper;
+import com.egorshenova.rss.database.RSSReaderDatabase;
 import com.egorshenova.rss.models.BaseModel;
 import com.egorshenova.rss.utils.Logger;
 
@@ -18,23 +17,15 @@ import java.util.List;
 
 public abstract class BaseDataSource<T extends BaseModel> {
     public final Logger logger = Logger.getLogger(BaseDataSource.class);
-    protected RSSSQLiteHelper dbHelper;
-    protected SQLiteDatabase database;
+    protected RSSReaderDatabase dbHelper;
 
     public BaseDataSource() {
         dbHelper = GlobalContainer.getInstance().getSQLiteDBHelper();
     }
 
-    public void open() throws SQLException {
-        database = dbHelper.getWritableDatabase();
-    }
-
-    public void close() {
-        dbHelper.close();
-    }
-
     /**
      * Method is used to create object from cursor
+     *
      * @param c cursor
      * @return object
      */
@@ -67,7 +58,7 @@ public abstract class BaseDataSource<T extends BaseModel> {
         return values;
     }
 
-    public synchronized Cursor rawQuery(String sql, Object... selectionArgs) {
+    protected synchronized Cursor rawQuery(String sql, Object... selectionArgs) {
         String[] queryArgs = new String[selectionArgs.length];
         for (int i = 0; i < selectionArgs.length; i++) {
             queryArgs[i] = selectionArgs[i].toString();
@@ -75,19 +66,17 @@ public abstract class BaseDataSource<T extends BaseModel> {
         }
         logger.debug("SQLHelper/rawQuery: sql=" + sql + ", queryArgs=" + queryArgs.toString());
         Cursor cursor = null;
-        if (database != null) {
-            cursor = database.rawQuery(sql, queryArgs);
+        if (RSSReaderDatabase.getDatabase() != null) {
+            cursor = RSSReaderDatabase.getDatabase().rawQuery(sql, queryArgs);
         }
         return cursor;
     }
 
-    public synchronized void execSql(String sql, Object... bindArgs) {
-        if (database != null) {
-            database.execSQL(sql, bindArgs);
-        }
+    protected synchronized void execSql(String sql, Object... bindArgs) {
+        RSSReaderDatabase.getDatabase().execSQL(sql, bindArgs);
     }
 
-    public SQLiteDatabase getWritableDatabase() {
-        return database;
+    protected SQLiteDatabase getWritableDatabase() {
+        return RSSReaderDatabase.getDatabase();
     }
 }

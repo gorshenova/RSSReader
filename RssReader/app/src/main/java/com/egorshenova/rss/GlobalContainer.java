@@ -4,13 +4,11 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.egorshenova.rss.database.RSSSQLiteHelper;
+import com.egorshenova.rss.database.RSSReaderDatabase;
 import com.egorshenova.rss.models.RSSFeed;
-import com.egorshenova.rss.utils.ComparatorByPubDate;
 import com.egorshenova.rss.utils.Logger;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class GlobalContainer {
@@ -21,7 +19,7 @@ public class GlobalContainer {
     private List<RSSFeed> feeds = new ArrayList<>();
     private Context context;
     private Handler handler;
-    private RSSSQLiteHelper dbHelper;
+    private RSSReaderDatabase dbHelper;
 
     private GlobalContainer() {
 
@@ -82,9 +80,9 @@ public class GlobalContainer {
         return false;
     }
 
-    public RSSSQLiteHelper getSQLiteDBHelper() {
+    public RSSReaderDatabase getSQLiteDBHelper() {
         if (dbHelper == null) {
-            dbHelper = new RSSSQLiteHelper(getContext());
+            dbHelper = new RSSReaderDatabase();
         }
         return dbHelper;
     }
