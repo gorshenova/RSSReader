@@ -1,6 +1,5 @@
 package com.egorshenova.rss.mvp.addfeed;
 
-import com.egorshenova.rss.models.RSSFeed;
 import com.egorshenova.rss.mvp.abs.IBasePresenter;
 import com.egorshenova.rss.mvp.abs.IBaseView;
 

@@ -15,8 +15,6 @@ import com.egorshenova.rss.utils.NetworkHelper;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
 public class FeedContentPresenter extends BasePresenter<FeedContentContract.View> implements FeedContentContract.Presenter{
 

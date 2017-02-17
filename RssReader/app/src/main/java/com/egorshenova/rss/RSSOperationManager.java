@@ -39,13 +39,13 @@ public class RSSOperationManager {
     private static final int STATE_ERROR = 102;
     private static final int STATE_DATABASE_OPERATIONS_COMPLETE = 103;
 
-    private String rsslink;
+    private String rssLink;
     private DownloadXmlCallback callback;
     private boolean feedUpdated;
     private int feedId;
 
     public RSSOperationManager(String rssLink, int feedId, boolean feedUpdated, DownloadXmlCallback callback) {
-        this.rsslink = rssLink;
+        this.rssLink = rssLink;
         this.callback = callback;
         this.feedUpdated = feedUpdated;
         this.feedId = feedId;
@@ -59,13 +59,6 @@ public class RSSOperationManager {
     public void setCallback(DownloadXmlCallback callback) {
         this.callback = callback;
     }
-
-    /* Handler dHandler =  new Handler(new Handler.Callback() { //TODO в чем отличие
-        @Override
-        public boolean handleMessage(Message message) {
-            return false;
-        }
-    });*/
 
     Handler downloadHandler = new Handler(Looper.myLooper()) {
         @Override
@@ -104,7 +97,7 @@ public class RSSOperationManager {
         @Override
         public void run() {
             try {
-                RSSFeed feed = loadXmlFromNetwork(rsslink);
+                RSSFeed feed = loadXmlFromNetwork(rssLink);
                 Message completeMessage = downloadHandler.obtainMessage(STATE_DOWNLOAD_TASK_COMPLETE, feed);
                 downloadHandler.sendMessage(completeMessage);
             } catch (Exception e) {

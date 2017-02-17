@@ -1,11 +1,8 @@
 package com.egorshenova.rss.ui.base;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
-
-import com.egorshenova.rss.utils.DialogHelper;
 
 public class BaseFragment extends DialogFragment {
 

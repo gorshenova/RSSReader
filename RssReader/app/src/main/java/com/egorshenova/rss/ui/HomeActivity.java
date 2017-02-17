@@ -10,7 +10,6 @@ import android.view.View;
 
 import com.egorshenova.rss.Constants;
 import com.egorshenova.rss.R;
-import com.egorshenova.rss.callbacks.AddFeedCallback;
 import com.egorshenova.rss.callbacks.MenuClickCallback;
 import com.egorshenova.rss.models.RSSFeed;
 import com.egorshenova.rss.models.RSSMenuItem;
@@ -22,11 +21,6 @@ import com.egorshenova.rss.ui.menu.MenuDrawerFragment;
 import com.egorshenova.rss.utils.DialogHelper;
 import com.egorshenova.rss.utils.Logger;
 import com.egorshenova.rss.utils.link.URLClickListener;
-
-import java.util.Observable;
-import java.util.Observer;
-
-import javax.security.auth.login.LoginException;
 
 public class HomeActivity extends BaseActivity implements HomeContract.View{
 
