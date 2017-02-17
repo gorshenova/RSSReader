@@ -10,7 +10,6 @@ public interface AddFeedContract {
         void showError(String message);
         void showLoading();
         void hideLoading();
-        void openRSSContent(RSSFeed feed);
     }
 
     interface Presenter extends IBasePresenter<AddFeedContract.View>{

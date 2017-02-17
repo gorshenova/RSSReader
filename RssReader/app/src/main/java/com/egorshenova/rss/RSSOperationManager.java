@@ -40,11 +40,11 @@ public class RSSOperationManager {
     private static final int STATE_DATABASE_OPERATIONS_COMPLETE = 103;
 
     private String rsslink;
-    private int feedId;
-    private boolean feedUpdated;
     private DownloadXmlCallback callback;
+    private boolean feedUpdated;
+    private int feedId;
 
-    public RSSOperationManager(String rssLink, boolean feedUpdated, int feedId, DownloadXmlCallback callback) {
+    public RSSOperationManager(String rssLink, int feedId, boolean feedUpdated, DownloadXmlCallback callback) {
         this.rsslink = rssLink;
         this.callback = callback;
         this.feedUpdated = feedUpdated;
@@ -126,7 +126,7 @@ public class RSSOperationManager {
         public void run() {
             try {
                 RSSFeed storedFeed;
-                if (feedUpdated && feedId != -1) {
+                if (feedUpdated) {
                     feed.setId(feedId);
                     storedFeed = updateFeedInDatabase(feed);
                 } else {
@@ -228,7 +228,7 @@ public class RSSOperationManager {
             Collections.sort(feed.getItems(), Collections.reverseOrder(new ComparatorByPubDate()));
 
             //insert in db
-            List<RSSItem> addedItems = feedItemDataSource.addItemsByFeedId(feedId, feed.getItems());
+            List<RSSItem> addedItems = feedItemDataSource.addItemsByFeedId(feed.getId(), feed.getItems());
 
             //set items in the feed which are added in database successfully
             feed.setItems(addedItems);

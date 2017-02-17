@@ -88,8 +88,8 @@ public class FeedItemDataSource extends BaseDataSource<RSSItem> {
      * @return if items were deleted successfully, then return 0, else -1
      */
     public int deleteItemsByFeedId(int feedId) {
+        SQLiteDatabase db = getWritableDatabase();
         try {
-            SQLiteDatabase db = getWritableDatabase();
             db.beginTransaction();
             execSql(FeedItemsEntry.SQL_DELETE_ITEMS_BY_FEED_ID, feedId);
             db.yieldIfContendedSafely();
@@ -98,6 +98,8 @@ public class FeedItemDataSource extends BaseDataSource<RSSItem> {
         } catch (SQLException ex) {
             Logger.error(FeedItemDataSource.class, ex.getMessage(), ex);
             return -1;
+        }finally {
+            db.endTransaction();
         }
     }
 

@@ -50,6 +50,8 @@ public class RSSFeed  extends BaseModel implements Serializable {
         this.rssLink = rssLink;
     }
 
+
+
     @Override
     public String toString() {
         return "RSSFeed{" +

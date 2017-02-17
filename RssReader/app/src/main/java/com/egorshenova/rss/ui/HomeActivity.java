@@ -23,7 +23,12 @@ import com.egorshenova.rss.utils.DialogHelper;
 import com.egorshenova.rss.utils.Logger;
 import com.egorshenova.rss.utils.link.URLClickListener;
 
-public class HomeActivity extends BaseActivity implements HomeContract.View {
+import java.util.Observable;
+import java.util.Observer;
+
+import javax.security.auth.login.LoginException;
+
+public class HomeActivity extends BaseActivity implements HomeContract.View{
 
     private static final Logger logger = Logger.getLogger(HomeActivity.class);
     private DrawerLayout drawerLayout;
@@ -51,12 +56,12 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
 
         presenter = new HomePresenter();
         presenter.attachView(this);
-
         presenter.initializeContent();
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                logger.debug("---> openFeedContentView");
                 openFeedContentView((RSSFeed) tab.getTag());
 
             }
@@ -76,10 +81,6 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (addFeedFragment != null) {
-            addFeedFragment.setCallback(null);
-        }
-
         if (feedContentFragment != null) {
             feedContentFragment.setUrlClickCallback(null);
         }
@@ -139,7 +140,6 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
         updateTabLayoutVisibility(View.GONE);
         drawerFragment.toggleMenu();
         addFeedFragment = AddFeedFragment.getInstance(getIntent().getExtras());
-        addFeedFragment.setCallback(addFeedCallback);
         openFragment(addFeedFragment, Constants.FRAGMENT_TAG_ADD_FEED);
     }
 
@@ -150,20 +150,6 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
         args.putString(Constants.BUNDLE_KEY_SHOW_URL, url);
         openFragment(WebViewFragment.getInstance(args), Constants.FRAGMENT_TAG_WEB_VIEW);
     }
-
-    private AddFeedCallback addFeedCallback = new AddFeedCallback() {
-        @Override
-        public void openAddedFeed(RSSFeed feed) {
-            //add new tab
-            addTab(feed);
-
-            // show feed
-            openFeedContentFragment(feed);
-
-            //update menu
-            drawerFragment.updateMenu();
-        }
-    };
 
     private MenuClickCallback menuClickCallback = new MenuClickCallback() {
         @Override
@@ -199,6 +185,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
 
     @Override
     public void addTab(RSSFeed feed) {
+        logger.debug("Add new tab by feed: " + feed);
         TabLayout.Tab newTab = tabLayout.newTab();
         newTab.setTag(feed);
         newTab.setText(feed.getTitle());
@@ -206,6 +193,13 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
         //feedId starts from 1 but tab index starts from 0, so tabPosition is calculated as feedId - 1
         int tabPosition = feed.getId() -1;
         tabLayout.addTab(newTab, tabPosition, true);
+    }
+
+    @Override
+    public void updateTab(RSSFeed feed) {
+        logger.debug("Update tab by feed: "  + feed);
+        int tabPosition = tabLayout.getSelectedTabPosition();
+        tabLayout.getTabAt(tabPosition).setText(feed.getTitle());
     }
 
     @Override
@@ -221,5 +215,10 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
     @Override
     public void hideProgress() {
         closeProgress();
+    }
+
+    @Override
+    public void updateMenu() {
+        drawerFragment.updateMenu();
     }
 }

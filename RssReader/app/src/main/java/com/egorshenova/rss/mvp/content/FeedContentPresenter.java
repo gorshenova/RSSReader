@@ -2,16 +2,23 @@ package com.egorshenova.rss.mvp.content;
 
 import com.egorshenova.rss.R;
 import com.egorshenova.rss.RSSOperationManager;
+import com.egorshenova.rss.RSSReaderApplication;
 import com.egorshenova.rss.callbacks.DownloadXmlCallback;
+import com.egorshenova.rss.database.dao.FeedItemDataSource;
+import com.egorshenova.rss.models.FeedChangeObject;
 import com.egorshenova.rss.models.RSSFeed;
+import com.egorshenova.rss.models.RSSItem;
 import com.egorshenova.rss.mvp.abs.BasePresenter;
 import com.egorshenova.rss.utils.ComparatorByPubDate;
 import com.egorshenova.rss.utils.Logger;
 import com.egorshenova.rss.utils.NetworkHelper;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
-public class FeedContentPresenter extends BasePresenter<FeedContentContract.View> implements FeedContentContract.Presenter {
+public class FeedContentPresenter extends BasePresenter<FeedContentContract.View> implements FeedContentContract.Presenter{
 
     private static Logger logger = Logger.getLogger(FeedContentPresenter.class);
 
@@ -37,7 +44,10 @@ public class FeedContentPresenter extends BasePresenter<FeedContentContract.View
         if (feed.getItems() != null && feed.getItems().size() > 0) {
             getView().showFeedContent(feed);
         } else {
-            downloadFeed(false, -1, feed.getRssLink());
+            //get items from db
+            FeedItemDataSource ds =  new FeedItemDataSource();
+            List<RSSItem> items = ds.getAllItemsByFeedId(feed.getId());
+            feed.setItems(items);
         }
     }
 
@@ -68,14 +78,14 @@ public class FeedContentPresenter extends BasePresenter<FeedContentContract.View
         downloadFeed(true, feed.getId(), feed.getRssLink());
     }
 
-    public void downloadFeed(boolean feedUpdate, int feedId, String rssLink) {
+    public void downloadFeed(final boolean feedUpdated, int feedId, String rssLink) {
         if (!NetworkHelper.isInternetAvailable(getContext())) {
             getView().showError(getContext().getResources().getString(R.string.error_internet_required));
 
         } else {
 
             getView().showLoading();
-            RSSOperationManager = new RSSOperationManager(rssLink, feedUpdate, feedId, new DownloadXmlCallback() {
+            RSSOperationManager = new RSSOperationManager(rssLink,feedId, feedUpdated, new DownloadXmlCallback() {
                 @Override
                 public void onError(String message) {
                     getView().showError(message);
@@ -85,16 +95,12 @@ public class FeedContentPresenter extends BasePresenter<FeedContentContract.View
                 @Override
                 public void onSuccess(RSSFeed feed) {
                     logger.debug("downloadFeed: " + feed);
-                    prepareRSSContent(feed);
+                    RSSReaderApplication.get().getFeedObservable().setObj(new FeedChangeObject(feed, feedUpdated));
+                    getView().showFeedContent(feed);
                     getView().hideLoading();
                 }
             });
             RSSOperationManager.start();
         }
-    }
-
-    private void prepareRSSContent(RSSFeed feed) {
-        this.feed = feed;
-        getView().showFeedContent(feed);
     }
 }

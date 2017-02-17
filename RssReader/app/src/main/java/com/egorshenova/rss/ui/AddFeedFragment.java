@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.egorshenova.rss.R;
-import com.egorshenova.rss.callbacks.AddFeedCallback;
+import com.egorshenova.rss.RSSReaderApplication;
 import com.egorshenova.rss.models.RSSFeed;
 import com.egorshenova.rss.mvp.addfeed.AddFeedContract;
 import com.egorshenova.rss.mvp.addfeed.AddFeedPresenter;
@@ -23,7 +23,6 @@ public class AddFeedFragment extends BaseFragment implements AddFeedContract.Vie
     private EditText urlEditText;
     private Button fetchButton, clearButton;
     private AddFeedPresenter presenter;
-    private AddFeedCallback callback;
 
     public static AddFeedFragment getInstance(Bundle args){
         AddFeedFragment fragment = new AddFeedFragment();
@@ -67,10 +66,6 @@ public class AddFeedFragment extends BaseFragment implements AddFeedContract.Vie
         }
     }
 
-    public void setCallback(AddFeedCallback callback) {
-        this.callback = callback;
-    }
-
     private void onClearButtonClick() {
         urlEditText.setText("");
     }
@@ -93,12 +88,5 @@ public class AddFeedFragment extends BaseFragment implements AddFeedContract.Vie
     @Override
     public void hideLoading() {
         closeProgress();
-    }
-
-    @Override
-    public void openRSSContent(RSSFeed feed) {
-        if(callback!= null){
-            callback.openAddedFeed(feed);
-        }
     }
 }

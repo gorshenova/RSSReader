@@ -15,4 +15,20 @@ public class BaseModel {
     public void setId(int id) {
         this.id = id;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BaseModel)) return false;
+
+        BaseModel baseModel = (BaseModel) o;
+
+        return getId() == baseModel.getId();
+
+    }
+
+    @Override
+    public int hashCode() {
+        return getId();
+    }
 }

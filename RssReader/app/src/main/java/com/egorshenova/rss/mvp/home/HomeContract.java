@@ -14,11 +14,15 @@ public interface HomeContract {
 
         void addTab(RSSFeed feed);
 
+        void updateTab(RSSFeed feed);
+
         void updateTabLayoutVisibility(int visibility);
 
         void showProgress();
 
         void hideProgress();
+
+        void updateMenu();
     }
 
     interface Presenter extends IBasePresenter<HomeContract.View> {

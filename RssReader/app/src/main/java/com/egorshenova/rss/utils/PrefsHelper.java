@@ -16,10 +16,10 @@ public class PrefsHelper {
         return instance;
     }
 
-    public static final String PREFS_FIRST_RUN = RSSReaderApplication.getInstance().getPackageName() + ".PREFS_FIRST_RUN";
+    public static final String PREFS_FIRST_RUN = RSSReaderApplication.get().getPackageName() + ".PREFS_FIRST_RUN";
 
     private SharedPreferences getSharedPreferences() {
-        return RSSReaderApplication.getInstance().getSharedPreferences(RSSReaderApplication.getInstance().getPackageName(), Context.MODE_PRIVATE);
+        return RSSReaderApplication.get().getSharedPreferences(RSSReaderApplication.get().getPackageName(), Context.MODE_PRIVATE);
     }
 
     public boolean loadFirstRunApp() {
