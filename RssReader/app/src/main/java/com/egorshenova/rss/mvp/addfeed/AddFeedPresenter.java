@@ -2,17 +2,16 @@ package com.egorshenova.rss.mvp.addfeed;
 
 import com.egorshenova.rss.GlobalContainer;
 import com.egorshenova.rss.R;
+import com.egorshenova.rss.RSSOperationManager;
 import com.egorshenova.rss.callbacks.DownloadXmlCallback;
-import com.egorshenova.rss.database.dao.FeedDataSource;
 import com.egorshenova.rss.models.RSSFeed;
 import com.egorshenova.rss.mvp.abs.BasePresenter;
-import com.egorshenova.rss.DownloadXmlManager;
 import com.egorshenova.rss.utils.NetworkHelper;
 import com.egorshenova.rss.utils.StringUtils;
 
 public class AddFeedPresenter extends BasePresenter<AddFeedContract.View> implements AddFeedContract.Presenter {
 
-    private DownloadXmlManager downloadManager;
+    private RSSOperationManager downloadManager;
 
     @Override
     public void detachView() {
@@ -40,7 +39,7 @@ public class AddFeedPresenter extends BasePresenter<AddFeedContract.View> implem
 
         } else {
             getView().showLoading();
-            downloadManager = new DownloadXmlManager(rssUrl, false, -1, downloadXmlCallback);
+            downloadManager = new RSSOperationManager(rssUrl, false, -1, downloadXmlCallback);
             downloadManager.start();
         }
 

@@ -26,11 +26,11 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Service is used to download xml file, parse it, insert or update data in database.
+ * RSSOperationManager downloads rss file, parses it, inserts or updates data in database.
  */
-public class DownloadXmlManager {
+public class RSSOperationManager {
 
-    private Logger logger = Logger.getLogger(DownloadXmlManager.class);
+    private Logger logger = Logger.getLogger(RSSOperationManager.class);
 
     public static final int READ_TIMEOUT = 10000; // in milliseconds
     public static final int CONNECT_TIMEOUT = 15000; // in milliseconds
@@ -44,7 +44,7 @@ public class DownloadXmlManager {
     private boolean feedUpdated;
     private DownloadXmlCallback callback;
 
-    public DownloadXmlManager(String rssLink, boolean feedUpdated, int feedId, DownloadXmlCallback callback) {
+    public RSSOperationManager(String rssLink, boolean feedUpdated, int feedId, DownloadXmlCallback callback) {
         this.rsslink = rssLink;
         this.callback = callback;
         this.feedUpdated = feedUpdated;
@@ -191,12 +191,16 @@ public class DownloadXmlManager {
         FeedDataSource feedDataSource = new FeedDataSource();
         int count = feedDataSource.updateFeed(feed);
 
-        //TODO update items
-
         //check if feed is updated successfully
         if (count == -1) {
             throw new DatabaseException(GlobalContainer.getInstance().getContext().getString(R.string.error_updating_feed_in_db));
         } else {
+            //Update items:
+            // 1. Delete items by feedId
+            // 2. Add new items by feedId
+            FeedItemDataSource itemDataSource = new FeedItemDataSource();
+            itemDataSource.deleteItemsByFeedId(feed.getId());
+            addItemsByFeedId(feed);
             return feed;
         }
     }
@@ -211,20 +215,23 @@ public class DownloadXmlManager {
         if (feedId == -1) {
             throw new DatabaseException(GlobalContainer.getInstance().getContext().getString(R.string.error_adding_feed_in_db));
         } else {
-            //insert feed items if they aren't absent
-            if (feed.getItems() != null && feed.getItems().size() > 0) {
-                FeedItemDataSource feedItemDataSource = new FeedItemDataSource();
-
-                //sort items by pubDate
-                Collections.sort(feed.getItems(), Collections.reverseOrder(new ComparatorByPubDate()));
-
-                //insert in db
-                List<RSSItem> addedItems = feedItemDataSource.addItemsByFeedId(feedId, feed.getItems());
-
-                //set items in the feed which are added in database successfully
-                feed.setItems(addedItems);
-            }
+            addItemsByFeedId(feed);
             return feed;
+        }
+    }
+
+    private void addItemsByFeedId(RSSFeed feed) {
+        if (feed.getItems() != null && feed.getItems().size() > 0) {
+            FeedItemDataSource feedItemDataSource = new FeedItemDataSource();
+
+            //sort items by pubDate
+            Collections.sort(feed.getItems(), Collections.reverseOrder(new ComparatorByPubDate()));
+
+            //insert in db
+            List<RSSItem> addedItems = feedItemDataSource.addItemsByFeedId(feedId, feed.getItems());
+
+            //set items in the feed which are added in database successfully
+            feed.setItems(addedItems);
         }
     }
 

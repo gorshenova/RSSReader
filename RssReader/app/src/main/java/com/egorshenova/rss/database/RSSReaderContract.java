@@ -69,6 +69,8 @@ public final class RSSReaderContract {
 
         public static final String SQL_DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
-        public static final String SQL_SELECT_ALL_ITEMS_BY_FEED_ID = "SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_NAME_FEED_ID + " = ? ";
+        public static final String SQL_SELECT_ALL_ITEMS_BY_FEED_ID = "SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_NAME_FEED_ID + " = ?";
+
+        public static final String SQL_DELETE_ITEMS_BY_FEED_ID  = "DELETE from" + TABLE_NAME + " WHERE "  + COLUMN_NAME_FEED_ID + " = ?";
     }
 }

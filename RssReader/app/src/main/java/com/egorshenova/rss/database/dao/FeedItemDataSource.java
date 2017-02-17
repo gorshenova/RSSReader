@@ -2,6 +2,7 @@ package com.egorshenova.rss.database.dao;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.egorshenova.rss.database.RSSReaderContract.*;
@@ -77,6 +78,26 @@ public class FeedItemDataSource extends BaseDataSource<RSSItem> {
             return addedItems;
         } finally {
             db.endTransaction();
+        }
+    }
+
+    /**
+     * Method delete items by feedId
+     *
+     * @param feedId
+     * @return if items were deleted successfully, then return 0, else -1
+     */
+    public int deleteItemsByFeedId(int feedId) {
+        try {
+            SQLiteDatabase db = getWritableDatabase();
+            db.beginTransaction();
+            execSql(FeedItemsEntry.SQL_DELETE_ITEMS_BY_FEED_ID, feedId);
+            db.yieldIfContendedSafely();
+            db.setTransactionSuccessful();
+            return 0;
+        } catch (SQLException ex) {
+            Logger.error(FeedItemDataSource.class, ex.getMessage(), ex);
+            return -1;
         }
     }
 
