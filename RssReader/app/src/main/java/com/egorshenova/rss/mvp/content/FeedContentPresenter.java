@@ -21,7 +21,7 @@ public class FeedContentPresenter extends BasePresenter<FeedContentContract.View
     private static Logger logger = Logger.getLogger(FeedContentPresenter.class);
 
     private RSSFeed feed;
-    private RSSOperationManager RSSOperationManager;
+    private RSSOperationManager rssOperationManager;
 
     public FeedContentPresenter(RSSFeed feed) {
         this.feed = feed;
@@ -30,8 +30,8 @@ public class FeedContentPresenter extends BasePresenter<FeedContentContract.View
     @Override
     public void detachView() {
         super.detachView();
-        if(RSSOperationManager != null){
-            RSSOperationManager.setCallback(null);
+        if(rssOperationManager != null){
+            rssOperationManager.unregister();
         }
     }
 
@@ -83,7 +83,7 @@ public class FeedContentPresenter extends BasePresenter<FeedContentContract.View
         } else {
 
             getView().showLoading();
-            RSSOperationManager = new RSSOperationManager(rssLink,feedId, feedUpdated, new DownloadXmlCallback() {
+            rssOperationManager = new RSSOperationManager(rssLink,feedId, feedUpdated, new DownloadXmlCallback() {
                 @Override
                 public void onError(String message) {
                     getView().showError(message);
@@ -98,7 +98,7 @@ public class FeedContentPresenter extends BasePresenter<FeedContentContract.View
                     getView().hideLoading();
                 }
             });
-            RSSOperationManager.start();
+            rssOperationManager.startDownloadRSSData();
         }
     }
 }

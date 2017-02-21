@@ -13,13 +13,13 @@ import com.egorshenova.rss.utils.StringUtils;
 
 public class AddFeedPresenter extends BasePresenter<AddFeedContract.View> implements AddFeedContract.Presenter {
 
-    private RSSOperationManager downloadManager;
+    private RSSOperationManager rssOperationManager;
 
     @Override
     public void detachView() {
         super.detachView();
-        if (downloadManager != null) {
-            downloadManager.setCallback(null);
+        if (rssOperationManager != null) {
+            rssOperationManager.unregister();
         }
     }
 
@@ -41,8 +41,8 @@ public class AddFeedPresenter extends BasePresenter<AddFeedContract.View> implem
 
         } else {
             getView().showLoading();
-            downloadManager = new RSSOperationManager(rssUrl, -1, false, downloadXmlCallback);
-            downloadManager.start();
+            rssOperationManager = new RSSOperationManager(rssUrl, -1, false, downloadXmlCallback);
+            rssOperationManager.startDownloadRSSData();
         }
 
     }

@@ -51,16 +51,17 @@ public class RSSOperationManager {
         this.feedId = feedId;
     }
 
-    public void start() {
+    public void startDownloadRSSData() {
         Thread t = new Thread(new DownloadXMLRunnable());
         t.start();
     }
 
-    public void setCallback(DownloadXmlCallback callback) {
-        this.callback = callback;
+    public void unregister() {
+        downloadHandler.removeCallbacksAndMessages(null);
+        callback = null;
     }
 
-    Handler downloadHandler = new Handler(Looper.myLooper()) {
+   private Handler downloadHandler = new Handler(Looper.myLooper()) {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);

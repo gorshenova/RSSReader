@@ -6,6 +6,7 @@ import android.content.Context;
 import com.egorshenova.rss.models.FeedChangeObject;
 import com.egorshenova.rss.models.RSSFeed;
 import com.egorshenova.rss.utils.Logger;
+import com.squareup.leakcanary.LeakCanary;
 
 import java.util.Observable;
 
@@ -31,6 +32,13 @@ public class RSSReaderApplication extends Application {
         instance = this;
         globalContainer = GlobalContainer.initialize(this);
         feedChangeObservable = new FeedChangeObservable();
+
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        LeakCanary.install(this);
     }
 
     public GlobalContainer getGlobalContainer() {
