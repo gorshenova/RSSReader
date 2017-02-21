@@ -15,11 +15,11 @@ import java.util.List;
 
 public class SplashActivity extends BaseActivity {
 
+    final Handler handler = new Handler();
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        final Handler handler = new Handler();
 
         Thread t = new Thread(new Runnable() {
             @Override
@@ -44,5 +44,11 @@ public class SplashActivity extends BaseActivity {
     @Override
     public int getContentHolderId() {
         return 0;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        handler.removeCallbacksAndMessages(null);
     }
 }

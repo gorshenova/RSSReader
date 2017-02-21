@@ -1,5 +1,11 @@
 package com.egorshenova.rss.mvp.addfeed;
 
+import android.content.Context;
+import android.support.v4.content.ContextCompat;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
 import com.egorshenova.rss.GlobalContainer;
 import com.egorshenova.rss.R;
 import com.egorshenova.rss.RSSOperationManager;
@@ -14,6 +20,7 @@ import com.egorshenova.rss.utils.StringUtils;
 public class AddFeedPresenter extends BasePresenter<AddFeedContract.View> implements AddFeedContract.Presenter {
 
     private RSSOperationManager rssOperationManager;
+    private int sampleLinkCounter;
 
     @Override
     public void detachView() {
@@ -45,6 +52,18 @@ public class AddFeedPresenter extends BasePresenter<AddFeedContract.View> implem
             rssOperationManager.startDownloadRSSData();
         }
 
+    }
+
+    @Override
+    public void loadSampleRSSLinks() {
+        Context context = GlobalContainer.getInstance().getContext();
+        String[] links = context.getResources().getStringArray(R.array.sample_rss_links);
+        if (sampleLinkCounter == links.length - 1) {
+            getView().showError(R.string.error_all_sample_links_loaded);
+        } else {
+            getView().showSampleRSSLinks(links[sampleLinkCounter]);
+            sampleLinkCounter++;
+        }
     }
 
     private DownloadXmlCallback downloadXmlCallback = new DownloadXmlCallback() {
