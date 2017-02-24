@@ -3,12 +3,9 @@ package com.egorshenova.rss;
 import android.app.Application;
 import android.content.Context;
 
-import com.egorshenova.rss.models.FeedChangeObject;
-import com.egorshenova.rss.models.RSSFeed;
+import com.egorshenova.rss.observers.FeedChangeObservable;
 import com.egorshenova.rss.utils.Logger;
 import com.squareup.leakcanary.LeakCanary;
-
-import java.util.Observable;
 
 public class RSSReaderApplication extends Application {
 
@@ -55,20 +52,5 @@ public class RSSReaderApplication extends Application {
 
     public FeedChangeObservable getFeedObservable() {
         return feedChangeObservable;
-    }
-
-    public class FeedChangeObservable extends Observable {
-
-        private FeedChangeObject obj;
-
-        public void setObj(FeedChangeObject obj) {
-            this.obj =  obj;
-            setChanged();
-            notifyObservers(obj);
-        }
-
-        public FeedChangeObject getObj() {
-            return obj;
-        }
     }
 }

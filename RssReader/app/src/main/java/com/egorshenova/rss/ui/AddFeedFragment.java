@@ -58,8 +58,8 @@ public class AddFeedFragment extends BaseFragment implements AddFeedContract.Vie
     @Override
     public void onClick(View view) {
 
-        hideKeyboard(rootView);
-        hideKeyboard();
+        //hideKeyboard(rootView);
+        //hideKeyboard();
 
         if (view.getId() == R.id.fetch_button) {
             onFetchButtonClick();

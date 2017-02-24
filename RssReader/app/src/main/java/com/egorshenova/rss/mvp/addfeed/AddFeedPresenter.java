@@ -60,6 +60,8 @@ public class AddFeedPresenter extends BasePresenter<AddFeedContract.View> implem
         String[] links = context.getResources().getStringArray(R.array.sample_rss_links);
         if (sampleLinkCounter == links.length - 1) {
             getView().showError(R.string.error_all_sample_links_loaded);
+            // the counter is reset to use sample links again
+            sampleLinkCounter = 0;
         } else {
             getView().showSampleRSSLinks(links[sampleLinkCounter]);
             sampleLinkCounter++;

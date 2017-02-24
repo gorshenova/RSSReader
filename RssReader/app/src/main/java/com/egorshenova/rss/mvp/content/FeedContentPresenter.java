@@ -1,5 +1,6 @@
 package com.egorshenova.rss.mvp.content;
 
+import com.egorshenova.rss.GlobalContainer;
 import com.egorshenova.rss.R;
 import com.egorshenova.rss.RSSOperationManager;
 import com.egorshenova.rss.RSSReaderApplication;
@@ -16,7 +17,7 @@ import com.egorshenova.rss.utils.NetworkHelper;
 import java.util.Collections;
 import java.util.List;
 
-public class FeedContentPresenter extends BasePresenter<FeedContentContract.View> implements FeedContentContract.Presenter{
+public class FeedContentPresenter extends BasePresenter<FeedContentContract.View> implements FeedContentContract.Presenter {
 
     private static Logger logger = Logger.getLogger(FeedContentPresenter.class);
 
@@ -30,7 +31,7 @@ public class FeedContentPresenter extends BasePresenter<FeedContentContract.View
     @Override
     public void detachView() {
         super.detachView();
-        if(rssOperationManager != null){
+        if (rssOperationManager != null) {
             rssOperationManager.unregister();
         }
     }
@@ -38,15 +39,15 @@ public class FeedContentPresenter extends BasePresenter<FeedContentContract.View
     @Override
     public void openFeedContent() {
         checkViewAttached();
-
-        if (feed.getItems() != null && feed.getItems().size() > 0) {
-            getView().showFeedContent(feed);
-        } else {
-            //get items from db
-            FeedItemDataSource ds =  new FeedItemDataSource();
+        if (feed.getItems() == null || feed.getItems().isEmpty()) {
+            //get items by feed from database
+            //update feed in global container
+            FeedItemDataSource ds = new FeedItemDataSource();
             List<RSSItem> items = ds.getAllItemsByFeedId(feed.getId());
             feed.setItems(items);
+            GlobalContainer.getInstance().updateFeed(feed);
         }
+        getView().showFeedContent(feed);
     }
 
     @Override
@@ -83,7 +84,7 @@ public class FeedContentPresenter extends BasePresenter<FeedContentContract.View
         } else {
 
             getView().showLoading();
-            rssOperationManager = new RSSOperationManager(rssLink,feedId, feedUpdated, new DownloadXmlCallback() {
+            rssOperationManager = new RSSOperationManager(rssLink, feedId, feedUpdated, new DownloadXmlCallback() {
                 @Override
                 public void onError(String message) {
                     getView().showError(message);

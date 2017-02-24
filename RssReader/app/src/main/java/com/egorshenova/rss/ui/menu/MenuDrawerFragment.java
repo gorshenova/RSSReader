@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.egorshenova.rss.R;
 import com.egorshenova.rss.callbacks.MenuClickCallback;
@@ -26,6 +27,12 @@ public class MenuDrawerFragment extends BaseFragment implements MenuContract.Vie
     private MenuPresenter presenter;
     private NavigationDrawerAdapter drawerAdapter;
     private MenuClickCallback menuCallback;
+    private int fragmentId;
+
+    public static MenuDrawerFragment get(){
+        MenuDrawerFragment frag =  new MenuDrawerFragment();
+        return frag;
+    }
 
     @Nullable
     @Override
@@ -36,11 +43,20 @@ public class MenuDrawerFragment extends BaseFragment implements MenuContract.Vie
         drawerList.setAdapter(drawerAdapter);
         drawerList.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        containerView = getActivity().findViewById(fragmentId);
+        drawerLayout.bringToFront();
+
         presenter = new MenuPresenter();
         presenter.attachView(this);
         return view;
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        presenter.prepareMenuItems();
+        drawerAdapter.setCallback(this.menuCallback);
+    }
 
     @Override
     public void onDestroy() {
@@ -49,13 +65,9 @@ public class MenuDrawerFragment extends BaseFragment implements MenuContract.Vie
     }
 
     public void setUp(int fragmentId, DrawerLayout drawerLayout, MenuClickCallback menuCallback) {
-        containerView = getActivity().findViewById(fragmentId);
         this.drawerLayout = drawerLayout;
-        this.drawerList.bringToFront();
         this.menuCallback = menuCallback;
-        drawerAdapter.setCallback(this.menuCallback);
-
-        presenter.prepareMenuItems();
+        this.fragmentId = fragmentId;
     }
 
     public void toggleMenu() {

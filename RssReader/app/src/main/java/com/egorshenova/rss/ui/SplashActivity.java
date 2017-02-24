@@ -2,43 +2,24 @@ package com.egorshenova.rss.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 
-import com.egorshenova.rss.GlobalContainer;
-import com.egorshenova.rss.database.dao.FeedDataSource;
-import com.egorshenova.rss.models.RSSFeed;
+import com.egorshenova.rss.mvp.splash.SplashContract;
+import com.egorshenova.rss.mvp.splash.SplashPresenter;
 import com.egorshenova.rss.ui.base.BaseActivity;
+import com.egorshenova.rss.utils.Logger;
 
-import java.util.List;
 
+public class SplashActivity extends BaseActivity implements SplashContract.View {
 
-public class SplashActivity extends BaseActivity {
-
-    final Handler handler = new Handler();
+    private Logger logger = Logger.getLogger(SplashActivity.class);
+    private SplashPresenter presenter =  new SplashPresenter();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                FeedDataSource feedDataSource = new FeedDataSource();
-                final List<RSSFeed> allFeeds = feedDataSource.getAllFeeds();
-                GlobalContainer.getInstance().setFeeds(allFeeds);
-
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent i = new Intent(SplashActivity.this, HomeActivity.class);
-                        startActivity(i);
-                        finish();
-                    }
-                });
-            }
-        });
-        t.start();
+        presenter.attachView(this);
+        presenter.loadSavedFeeds();
     }
 
     @Override
@@ -47,8 +28,30 @@ public class SplashActivity extends BaseActivity {
     }
 
     @Override
+    protected void onResume() {
+        logger.debug("onResume");
+        super.onResume();
+        presenter.attachView(this);
+    }
+
+    @Override
     protected void onPause() {
+        logger.debug("onPause");
         super.onPause();
-        handler.removeCallbacksAndMessages(null);
+    }
+
+    @Override
+    protected void onDestroy() {
+        logger.debug("onDestroy");
+        super.onDestroy();
+        presenter.detachView();
+    }
+
+    @Override
+    public void openHomeScreen() {
+        logger.debug("openHomeScreen");
+        Intent i = new Intent(SplashActivity.this, HomeActivity.class);
+        startActivity(i);
+        finish();
     }
 }

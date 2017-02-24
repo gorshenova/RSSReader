@@ -6,7 +6,6 @@
     <string name="add_rss_feed">Add RSS Feed</string>
     <string name="progress_loading">Loading...</string>
     <string name="rss_link_input_hint">input RSS  2.0 </string>
-    <string name="default_rss_link">http://www.feedforall.com/sample.xml</string>
     <string name="rss_reader">RSS Reader</string>
     <string name="fetch">Fetch</string>
     <string name="load_sample_links">Load sample links</string>
@@ -21,9 +20,14 @@
     <string name="error_updating_feed_in_db">Error updating feed in database</string>
     <string name="error_all_sample_links_loaded">All sample links have already loaded.</string>
 
+    <string name="dialog_exit_button_yes">Yes</string>
+    <string name="dialog_exit_button_No">No</string>
+    <string name="dialog_exit_message">Do you want to exit the application?</string>
+
     <string-array name="sample_rss_links">
         <item>http://www.feedforall.com/sample.xml</item>
         <item>http://www.feedforall.com/blog-feed.xml</item>
-        <item>https://drive.google.com/file/d/0B-8keEfd9GfRY25vSEw5RkEtazA/view?usp=sharing</item>
+        <item>http://www.feedforall.com/sample-feed.xml</item>
+        <item>http://www.rss-specifications.com/blog-feed.xml</item>
     </string-array>
 </resources>

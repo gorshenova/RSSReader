@@ -20,7 +20,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dimen_5"
         android:hint="@string/rss_link_input_hint"
-        android:text="@string/default_rss_link"
         android:textSize="@dimen/font_18" />
 
     <LinearLayout

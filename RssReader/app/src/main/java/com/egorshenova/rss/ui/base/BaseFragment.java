@@ -24,12 +24,12 @@ public class BaseFragment extends DialogFragment {
         getBaseActivity().showKeyboard(view);
     }
 
-    protected void hideKeyboard() {
+/*    protected void hideKeyboard() {
         getBaseActivity().hideKeyboard();
-    }
-
+    }*/
+/*
     protected void hideKeyboard(View view) {
         getBaseActivity().hideKeyboard(view);
-    }
+    }*/
 
 }

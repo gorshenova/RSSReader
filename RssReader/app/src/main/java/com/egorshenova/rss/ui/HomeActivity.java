@@ -22,7 +22,7 @@ import com.egorshenova.rss.utils.DialogHelper;
 import com.egorshenova.rss.utils.Logger;
 import com.egorshenova.rss.utils.link.URLClickListener;
 
-public class HomeActivity extends BaseActivity implements HomeContract.View{
+public class HomeActivity extends BaseActivity implements HomeContract.View {
 
     private static final Logger logger = Logger.getLogger(HomeActivity.class);
     private DrawerLayout drawerLayout;
@@ -43,54 +43,63 @@ public class HomeActivity extends BaseActivity implements HomeContract.View{
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        drawerFragment = (MenuDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
+
+        drawerFragment = MenuDrawerFragment.get();
+        add(drawerFragment, R.id.fragment_navigation_drawer, Constants.FRAGMENT_TAG_MENU_DRAWER);
         drawerFragment.setUp(R.id.fragment_navigation_drawer, drawerLayout, menuClickCallback);
 
         setSupportActionBar(toolbar);
 
-        presenter = new HomePresenter();
-        presenter.attachView(this);
-        presenter.initializeContent();
-
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                logger.debug("---> openFeedContentView");
-                openFeedContentView((RSSFeed) tab.getTag());
+                logger.debug("onTabSelected");
+                openFeedContentFragment((RSSFeed) tab.getTag());
 
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
+                //TODO Not implementation yet
             }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-
+                //TODO Not implementation yet
             }
         });
+
+        presenter = new HomePresenter();
+        presenter.attachView(this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        presenter.initializeContent();
     }
 
     @Override
     protected void onDestroy() {
+        logger.debug("onDestroy()");
         super.onDestroy();
         if (feedContentFragment != null) {
             feedContentFragment.setUrlClickCallback(null);
         }
-        drawerFragment.setMenuCallback(null);
         drawerFragment.setMenuCallback(null);
         presenter.detachView();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        logger.debug("onCreateOptionsMenu");
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        logger.debug("onOptionsItemSelected");
         FeedContentFragment feedContentFragment = (FeedContentFragment) getSupportFragmentManager().findFragmentByTag(Constants.FRAGMENT_TAG_FEED_CONTENT);
         if (isRefreshMenuAvailable && feedContentFragment != null) {
             int id = item.getItemId();
@@ -114,22 +123,21 @@ public class HomeActivity extends BaseActivity implements HomeContract.View{
     }
 
     private void openFeedContentFragment(RSSFeed feed) {
-        //select  tab for current feed
-        TabLayout.Tab tab = tabLayout.getTabAt(feed.getId() - 1);
-        tab.select();
+        logger.debug("openFeedContentFragment");
 
         drawerFragment.toggleMenu();
-        updateTabLayoutVisibility(View.VISIBLE);
         isRefreshMenuAvailable = true;
 
         Bundle args = new Bundle();
         args.putSerializable(Constants.BUNDLE_KEY_FEED, feed);
         feedContentFragment = FeedContentFragment.getInstance(args);
         feedContentFragment.setUrlClickCallback(urlClickCallback);
+
         openFragment(feedContentFragment, Constants.FRAGMENT_TAG_FEED_CONTENT);
     }
 
     private void openAddFeedFragment() {
+        logger.debug("openAddFeedFragment");
         isRefreshMenuAvailable = false;
         updateTabLayoutVisibility(View.GONE);
         drawerFragment.toggleMenu();
@@ -138,6 +146,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View{
     }
 
     private void openWebViewFragment(String url) {
+        logger.debug("openWebViewFragment");
         drawerFragment.toggleMenu();
         updateTabLayoutVisibility(View.GONE);
         Bundle args = new Bundle();
@@ -162,57 +171,71 @@ public class HomeActivity extends BaseActivity implements HomeContract.View{
     private URLClickListener urlClickCallback = new URLClickListener() {
         @Override
         public void onClick(String url) {
+            logger.debug("urlClickCallback onClick");
             openWebViewFragment(url);
         }
     };
 
 
     @Override
-    public void openFeedContentView(RSSFeed feed) {
+    public void openFeedContent(RSSFeed feed) {
+        logger.debug("openFeedContent");
+        updateTabLayoutVisibility(View.VISIBLE);
         openFeedContentFragment(feed);
     }
 
     @Override
     public void openAddFeedView() {
+        logger.debug("openAddFeedView");
         openAddFeedFragment();
     }
 
     @Override
-    public void addTab(RSSFeed feed) {
-        logger.debug("Add new tab by feed: " + feed);
+    public void addTabAndShowContent(RSSFeed feed) {
+        logger.debug("addTabAndShowContent: " + feed);
         TabLayout.Tab newTab = tabLayout.newTab();
         newTab.setTag(feed);
         newTab.setText(feed.getTitle());
 
         //feedId starts from 1 but tab index starts from 0, so tabPosition is calculated as feedId - 1
-        int tabPosition = feed.getId() -1;
-        tabLayout.addTab(newTab, tabPosition, true);
+        //add tab also includes the 'onTabSelected' method call
+        int tabPosition = feed.getId() - 1;
+        tabLayout.addTab(newTab, tabPosition);
     }
 
     @Override
     public void updateTab(RSSFeed feed) {
-        logger.debug("Update tab by feed: "  + feed);
+        logger.debug("updateTab: " + feed);
         int tabPosition = tabLayout.getSelectedTabPosition();
         tabLayout.getTabAt(tabPosition).setText(feed.getTitle());
     }
 
     @Override
     public void updateTabLayoutVisibility(int visibility) {
+        logger.debug("updateTabLayoutVisibility");
         tabLayout.setVisibility(visibility);
     }
 
     @Override
+    public void showFeedContentByTabId(int tabPosition) {
+        tabLayout.getTabAt(tabPosition).select();
+    }
+
+    @Override
     public void showProgress() {
+        logger.debug("showProgress");
         createProgress(getString(R.string.progress_loading));
     }
 
     @Override
     public void hideProgress() {
+        logger.debug("hideProgress");
         closeProgress();
     }
 
     @Override
     public void updateMenu() {
+        logger.debug("updateMenu");
         drawerFragment.updateMenu();
     }
 }

@@ -42,15 +42,14 @@ public class HomePresenter extends BasePresenter<HomeContract.View> implements H
                 FeedDataSource feedDataSource = new FeedDataSource();
                 final List<RSSFeed> allFeeds = feedDataSource.getAllFeeds();
                 GlobalContainer.getInstance().setFeeds(allFeeds);
-                getView().updateMenu();
                 h.post(new Runnable() {
                     @Override
                     public void run() {
+                        getView().updateMenu();
                         getView().hideProgress();
 
                         if (allFeeds != null && allFeeds.size() > 0) {
-                            setupTabsLabels();
-                            getView().openFeedContentView(allFeeds.get(0));
+                            setupContentsOfTabs();
                             getView().updateTabLayoutVisibility(View.VISIBLE);
                         } else {
                             getView().updateTabLayoutVisibility(View.GONE);
@@ -73,22 +72,26 @@ public class HomePresenter extends BasePresenter<HomeContract.View> implements H
         if (obj.isUpdated()) {
             //update tab
             getView().updateTab(obj.getFeed());
+            // show feed content
+            getView().openFeedContent(obj.getFeed());
         } else {
             //add new tab
-            getView().addTab(obj.getFeed());
+            getView().addTabAndShowContent(obj.getFeed());
         }
-
-        // show feed content
-        getView().openFeedContentView(obj.getFeed());
 
         //update menu
         getView().updateMenu();
     }
 
-    private void setupTabsLabels() {
+    private void setupContentsOfTabs() {
         List<RSSFeed> feeds = GlobalContainer.getInstance().getFeeds();
         for (RSSFeed f : feeds) {
-            getView().addTab(f);
+            getView().addTabAndShowContent(f);
+        }
+
+        //if tab is selected then automatically called 'onTabSelected' method inside  OnTabSelectedListener
+        if (feeds.get(0) != null) {
+            getView().showFeedContentByTabId(feeds.get(0).getId() - 1);
         }
     }
 }

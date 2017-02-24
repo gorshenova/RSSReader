@@ -34,13 +34,19 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <fragment
+       <FrameLayout
+            android:id="@+id/fragment_navigation_drawer"
+            android:layout_width="@dimen/dimen_260"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"/>
+
+       <!-- <fragment
             android:id="@+id/fragment_navigation_drawer"
             android:name="com.egorshenova.rss.ui.menu.MenuDrawerFragment"
             android:layout_width="@dimen/dimen_260"
             android:layout_height="match_parent"
             android:layout_gravity="start"
             app:layout="@layout/fragment_navigation_drawer"
-            tools:layout="@layout/fragment_navigation_drawer" />
+            tools:layout="@layout/fragment_navigation_drawer"/>-->
     </android.support.v4.widget.DrawerLayout>
 </RelativeLayout>
