@@ -4,6 +4,8 @@ import com.egorshenova.rss.models.RSSFeed;
 import com.egorshenova.rss.mvp.abs.IBasePresenter;
 import com.egorshenova.rss.mvp.abs.IBaseView;
 
+import java.util.List;
+
 public interface FeedContentContract {
 
     interface View extends IBaseView {
@@ -12,20 +14,23 @@ public interface FeedContentContract {
 
         void hideLoading();
 
-        void showFeedContent(RSSFeed feed);
-
         void showError(String message);
+
+
+        void addTabsAndShowContent(List<RSSFeed> feeds, int selectedTabPost);
+
+        void updateFeedContent(RSSFeed feed);
 
     }
 
     interface Presenter extends IBasePresenter<FeedContentContract.View> {
 
-        void openFeedContent();
+        void initializeContent(RSSFeed selectedFeed);
 
         void sortByNewest();
 
         void sortByOldest();
 
-        void updateFeed();
+        void updateFeed(RSSFeed selectedFeed);
     }
 }

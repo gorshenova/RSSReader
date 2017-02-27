@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RSSFeed  extends BaseModel implements Serializable {
+
+    public static final int DEFAULT_ID  = -1;
+
     private String title;
     private String imageUrl;
     private String rssLink;
@@ -55,7 +58,8 @@ public class RSSFeed  extends BaseModel implements Serializable {
     @Override
     public String toString() {
         return "RSSFeed{" +
-                "title='" + title + '\'' +
+                "id="  + id +
+                ", title='" + title + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
                 ", rssLink='" + rssLink + '\'' +
                 ", items=" + (items != null ? items.size() : null) +

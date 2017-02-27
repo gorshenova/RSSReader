@@ -6,15 +6,10 @@ import com.egorshenova.rss.mvp.abs.IBaseView;
 
 public interface HomeContract {
     interface View extends IBaseView {
-        void openFeedContent(RSSFeed feed);
 
         void openAddFeedView();
 
-        void addTabAndShowContent(RSSFeed feed);
-
-        void updateTab(RSSFeed feed);
-
-        void updateTabLayoutVisibility(int visibility);
+        void openFeedContentView(RSSFeed feed);
 
         void showProgress();
 
@@ -22,7 +17,6 @@ public interface HomeContract {
 
         void updateMenu();
 
-        void showFeedContentByTabId(int tabIndex);
     }
 
     interface Presenter extends IBasePresenter<HomeContract.View> {

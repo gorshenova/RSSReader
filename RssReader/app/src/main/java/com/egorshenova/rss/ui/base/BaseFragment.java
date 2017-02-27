@@ -24,6 +24,10 @@ public class BaseFragment extends DialogFragment {
         getBaseActivity().showKeyboard(view);
     }
 
+    protected void openFragment(BaseFragment fragment, String fragmentTag){
+        getBaseActivity().openFragment(fragment, fragmentTag);
+    }
+
 /*    protected void hideKeyboard() {
         getBaseActivity().hideKeyboard();
     }*/

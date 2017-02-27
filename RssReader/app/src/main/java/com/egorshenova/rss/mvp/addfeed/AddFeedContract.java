@@ -1,7 +1,5 @@
 package com.egorshenova.rss.mvp.addfeed;
 
-import android.widget.TextView;
-
 import com.egorshenova.rss.mvp.abs.IBasePresenter;
 import com.egorshenova.rss.mvp.abs.IBaseView;
 

@@ -1,10 +1,6 @@
 package com.egorshenova.rss.mvp.addfeed;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.egorshenova.rss.GlobalContainer;
 import com.egorshenova.rss.R;
@@ -48,7 +44,7 @@ public class AddFeedPresenter extends BasePresenter<AddFeedContract.View> implem
 
         } else {
             getView().showLoading();
-            rssOperationManager = new RSSOperationManager(rssUrl, -1, false, downloadXmlCallback);
+            rssOperationManager = new RSSOperationManager(rssUrl, RSSFeed.DEFAULT_ID, /*false,*/ downloadXmlCallback);
             rssOperationManager.startDownloadRSSData();
         }
 
@@ -78,7 +74,7 @@ public class AddFeedPresenter extends BasePresenter<AddFeedContract.View> implem
         @Override
         public void onSuccess(RSSFeed feed) {
             //display new feed
-            RSSReaderApplication.get().getFeedObservable().setObj(new FeedChangeObject(feed, false));
+            RSSReaderApplication.get().getFeedObservable().setObj(new FeedChangeObject(feed));
             getView().hideLoading();
         }
     };

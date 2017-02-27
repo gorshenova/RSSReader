@@ -1,7 +1,6 @@
 package com.egorshenova.rss.mvp.home;
 
 import android.os.Handler;
-import android.view.View;
 
 import com.egorshenova.rss.GlobalContainer;
 import com.egorshenova.rss.RSSReaderApplication;
@@ -33,6 +32,8 @@ public class HomePresenter extends BasePresenter<HomeContract.View> implements H
 
     @Override
     public void initializeContent() {
+        checkViewAttached();
+
         getView().showProgress();
 
         final Handler h = new Handler();
@@ -49,10 +50,8 @@ public class HomePresenter extends BasePresenter<HomeContract.View> implements H
                         getView().hideProgress();
 
                         if (allFeeds != null && allFeeds.size() > 0) {
-                            setupContentsOfTabs();
-                            getView().updateTabLayoutVisibility(View.VISIBLE);
+                            getView().openFeedContentView(allFeeds.get(0));
                         } else {
-                            getView().updateTabLayoutVisibility(View.GONE);
                             getView().openAddFeedView();
                         }
                     }
@@ -69,29 +68,11 @@ public class HomePresenter extends BasePresenter<HomeContract.View> implements H
         FeedChangeObject obj = (FeedChangeObject) o;
         logger.debug("Observable starts. Feed data changed: " + obj);
 
-        if (obj.isUpdated()) {
-            //update tab
-            getView().updateTab(obj.getFeed());
-            // show feed content
-            getView().openFeedContent(obj.getFeed());
-        } else {
-            //add new tab
-            getView().addTabAndShowContent(obj.getFeed());
-        }
+        //open feed content
+        getView().openFeedContentView(obj.getFeed());
 
         //update menu
         getView().updateMenu();
     }
 
-    private void setupContentsOfTabs() {
-        List<RSSFeed> feeds = GlobalContainer.getInstance().getFeeds();
-        for (RSSFeed f : feeds) {
-            getView().addTabAndShowContent(f);
-        }
-
-        //if tab is selected then automatically called 'onTabSelected' method inside  OnTabSelectedListener
-        if (feeds.get(0) != null) {
-            getView().showFeedContentByTabId(feeds.get(0).getId() - 1);
-        }
-    }
 }

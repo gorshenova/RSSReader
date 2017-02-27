@@ -2,22 +2,18 @@ package com.egorshenova.rss.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.egorshenova.rss.R;
 import com.egorshenova.rss.mvp.addfeed.AddFeedContract;
 import com.egorshenova.rss.mvp.addfeed.AddFeedPresenter;
 import com.egorshenova.rss.ui.base.BaseFragment;
 import com.egorshenova.rss.utils.DialogHelper;
-
-import java.util.List;
 
 public class AddFeedFragment extends BaseFragment implements AddFeedContract.View, View.OnClickListener {
 
@@ -57,10 +53,6 @@ public class AddFeedFragment extends BaseFragment implements AddFeedContract.Vie
 
     @Override
     public void onClick(View view) {
-
-        //hideKeyboard(rootView);
-        //hideKeyboard();
-
         if (view.getId() == R.id.fetch_button) {
             onFetchButtonClick();
         } else if (view.getId() == R.id.load_sample_links_button) {

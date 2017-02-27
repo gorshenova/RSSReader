@@ -41,13 +41,11 @@ public class RSSOperationManager {
 
     private String rssLink;
     private DownloadXmlCallback callback;
-    private boolean feedUpdated;
     private int feedId;
 
-    public RSSOperationManager(String rssLink, int feedId, boolean feedUpdated, DownloadXmlCallback callback) {
+    public RSSOperationManager(String rssLink, int feedId, DownloadXmlCallback callback) {
         this.rssLink = rssLink;
         this.callback = callback;
-        this.feedUpdated = feedUpdated;
         this.feedId = feedId;
     }
 
@@ -75,8 +73,8 @@ public class RSSOperationManager {
                     break;
                 case STATE_DATABASE_OPERATIONS_COMPLETE:
                     RSSFeed feed = (RSSFeed) msg.obj;
-                    if (feedUpdated) {
-                        //update feed
+                    if (feedId != RSSFeed.DEFAULT_ID) {
+                        //update feed in container
                         GlobalContainer.getInstance().updateFeed(feed);
                     } else {
                         //add new feed to container
@@ -120,7 +118,7 @@ public class RSSOperationManager {
         public void run() {
             try {
                 RSSFeed storedFeed;
-                if (feedUpdated) {
+                if (feedId != RSSFeed.DEFAULT_ID) {
                     feed.setId(feedId);
                     storedFeed = updateFeedInDatabase(feed);
                 } else {
