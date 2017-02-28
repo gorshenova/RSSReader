@@ -14,8 +14,11 @@ import com.egorshenova.rss.mvp.addfeed.AddFeedContract;
 import com.egorshenova.rss.mvp.addfeed.AddFeedPresenter;
 import com.egorshenova.rss.ui.base.BaseFragment;
 import com.egorshenova.rss.utils.DialogHelper;
+import com.egorshenova.rss.utils.Logger;
 
 public class AddFeedFragment extends BaseFragment implements AddFeedContract.View, View.OnClickListener {
+
+    private Logger logger = Logger.getLogger(AddFeedFragment.class);
 
     private LinearLayout rootView;
     private EditText urlEditText;
@@ -31,6 +34,8 @@ public class AddFeedFragment extends BaseFragment implements AddFeedContract.Vie
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        logger.debug("onCreateView");
+
         View view = inflater.inflate(R.layout.fragment_add_feed, container, false);
         rootView = (LinearLayout) view.findViewById(R.id.add_feed_root_view);
         urlEditText = (EditText) view.findViewById(R.id.url_edit_text);
@@ -46,7 +51,14 @@ public class AddFeedFragment extends BaseFragment implements AddFeedContract.Vie
     }
 
     @Override
+    public void onPause() {
+        logger.debug("onPause");
+        super.onPause();
+    }
+
+    @Override
     public void onDestroy() {
+        logger.debug("onDestroy");
         super.onDestroy();
         presenter.detachView();
     }
@@ -65,6 +77,9 @@ public class AddFeedFragment extends BaseFragment implements AddFeedContract.Vie
     }
 
     private void onFetchButtonClick() {
+        //getBaseActivity().hideKeyboard(urlEditText);
+        getBaseActivity().hideSoftKeyboard(urlEditText);
+
         String urlStr = urlEditText.getText().toString();
         presenter.fetchFeed(urlStr);
     }

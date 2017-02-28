@@ -44,7 +44,6 @@ public class MenuDrawerFragment extends BaseFragment implements MenuContract.Vie
         drawerList.setLayoutManager(new LinearLayoutManager(getContext()));
 
         containerView = getActivity().findViewById(fragmentId);
-        drawerLayout.bringToFront();
 
         presenter = new MenuPresenter();
         presenter.attachView(this);
@@ -68,6 +67,8 @@ public class MenuDrawerFragment extends BaseFragment implements MenuContract.Vie
         this.drawerLayout = drawerLayout;
         this.menuCallback = menuCallback;
         this.fragmentId = fragmentId;
+
+        drawerLayout.bringToFront();
     }
 
     public void toggleMenu() {

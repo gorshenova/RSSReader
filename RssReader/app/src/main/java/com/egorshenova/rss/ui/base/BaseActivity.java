@@ -6,8 +6,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 import com.egorshenova.rss.R;
 import com.egorshenova.rss.utils.DialogHelper;
@@ -106,49 +109,55 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-/*    public void hideKeyboard() {
-        try {
-            IBinder windowToken = getWindow().getDecorView().getRootView().getWindowToken();
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(windowToken, 0);
-        } catch (Exception e) {
-            Logger.getLogger(BaseActivity.class).error(e.getMessage(), e);
-        }
-    }*/
-
     /**
      * Hide keyboard on touch of UI
      */
-   /* public void hideKeyboard(View view) {
+    public void hideKeyboard(View view) {
+
         if (view instanceof ViewGroup) {
+
             for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+
                 View innerView = ((ViewGroup) view).getChildAt(i);
+
                 hideKeyboard(innerView);
             }
         }
-
         if (!(view instanceof EditText)) {
+
             view.setOnTouchListener(new View.OnTouchListener() {
                 @Override
-                public boolean onTouch(View view, MotionEvent event) {
-                    if (view != null) {
-                        InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        if (inputManager != null) {
-                            if (android.os.Build.VERSION.SDK_INT < 11) {
-                                inputManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                            } else {
-                                if (BaseActivity.this.getCurrentFocus() != null) {
-                                    inputManager.hideSoftInputFromWindow(BaseActivity.this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                                }
-                                view.clearFocus();
-                            }
-                            view.clearFocus();
-                        }
-                    }
+                public boolean onTouch(View v, MotionEvent event) {
+                    hideSoftKeyboard(v);
                     return false;
                 }
+
             });
         }
-    }*/
+
+    }
+
+    /**
+     * Hide keyboard while focus is moved
+     */
+    public void hideSoftKeyboard(View view) {
+        if (view != null) {
+            InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (inputManager != null) {
+                if (android.os.Build.VERSION.SDK_INT < 11) {
+                    inputManager.hideSoftInputFromWindow(view.getWindowToken(),
+                            0);
+                } else {
+                    if (this.getCurrentFocus() != null) {
+                        inputManager.hideSoftInputFromWindow(this
+                                        .getCurrentFocus().getWindowToken(),
+                                InputMethodManager.HIDE_NOT_ALWAYS);
+                    }
+                    view.clearFocus();
+                }
+                view.clearFocus();
+            }
+        }
+    }
 
 }
